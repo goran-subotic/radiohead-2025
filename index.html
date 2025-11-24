@@ -504,6 +504,9 @@
         const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
         const analysisPanel = document.getElementById('analysis-panel');
         const analysisContent = document.getElementById('analysis-content');
+        const appContainer = document.getElementById('app-container');
+        const svgPath = document.getElementById('tour-path');
+
 
         /**
          * Robust fetch with exponential backoff for API calls.
@@ -595,15 +598,12 @@
             }
         }
         
-        // --- LOGIC FUNCTIONS (DO NOT EDIT BELOW) ---
+        // --- LOGIC FUNCTIONS ---
 
         /**
-         * Returns only the manually entered videos. Simulation logic has been removed.
-         * @param {Array} realVideos - The curated list of videos.
-         * @returns {Array} The curated list of videos only.
+         * Returns only the manually entered videos.
          */
         function generateVideos(realVideos) {
-            // Only return the real videos, simulation logic has been removed
             return realVideos;
         }
 
@@ -619,24 +619,26 @@
             bgLayer.style.backgroundImage = `url('${selectedUrl}')`;
         }
 
-        // Process CORE_TOUR_DATA (no simulation/filler is added now)
+        // Process CORE_TOUR_DATA (run once)
         const tourData = CORE_TOUR_DATA.map(data => ({
             ...data,
             videos: generateVideos(data.realVideos)
         }));
 
         // --- THUMBNAIL SIZE CONSTANTS ---
-        // Sizes increased by 50% from (50/30 min) to (100/60 max)
-        const MIN_WIDTH = 75;  // 50 * 1.5
-        const MIN_HEIGHT = 45; // 30 * 1.5
-        const MAX_WIDTH = 150; // 100 * 1.5
-        const MAX_HEIGHT = 90; // 60 * 1.5
+        const MIN_WIDTH = 75; 
+        const MIN_HEIGHT = 45; 
+        const MAX_WIDTH = 150; 
+        const MAX_HEIGHT = 90; 
         const ASPECT_RATIO = MIN_WIDTH / MIN_HEIGHT; 
 
-        // --- LAYOUT ENGINE ---
+        // --- Spiral Scaling Base Constants ---
+        // INCREASED these constants to ensure wider spread (from 65/16)
+        const BASE_MIN_RADIUS = 100; // Starting distance from city center (pixels at 1.0 scale)
+        const BASE_SPREAD = 25;     // Distance increase between thumbnails (pixels at 1.0 scale)
+        const BASE_HEIGHT_PX = 900; // Baseline height for a scale factor of 1.0
 
-        const appContainer = document.getElementById('app-container');
-        const svgPath = document.getElementById('tour-path');
+        // --- LAYOUT ENGINE ---
         
         // Using "Zones" to keep cities somewhat apart
         const zones = [
@@ -656,95 +658,87 @@
             };
         });
 
-        // --- RENDER ---
-        
-        // --- Spiral Scaling Parameters ---
-        // Baseline height for a scale factor of 1.0
-        const BASE_HEIGHT_PX = 900; 
-        // Calculate dynamic scale factor, ensuring it doesn't drop too low on tiny screens
-        const scaleFactor = Math.max(0.7, window.innerHeight / BASE_HEIGHT_PX); 
-        
-        // Base Spiral Constants (fixed pixel values used for calculation at 1.0 scale)
-        const BASE_MIN_RADIUS = 65; 
-        const BASE_SPREAD = 16;     
-
-        cityPositions.forEach((city, index) => {
-            // 1. Create City Container
-            const node = document.createElement('div');
-            node.className = 'city-node';
-            node.style.left = `${city.x}%`;
-            node.style.top = `${city.y}%`;
+        // --- RENDER FUNCTION ---
+        function renderTourNodes() {
+            // 1. Clear the container before re-rendering
+            appContainer.innerHTML = ''; 
             
-            // 2. Add Label (Name + Date)
-            const label = document.createElement('div');
-            label.className = 'city-label-group';
-            label.innerHTML = `
-                <div class="city-date">${city.dates}</div>
-                <div class="city-name">${city.city}</div>
-            `;
-            // Attach the LLM feature handler to the city label group
-            label.onclick = () => generateArchivalNote(city.city);
-
-            node.appendChild(label);
-
-            // 3. Create Spiral Container
-            const spiral = document.createElement('div');
-            spiral.className = 'spiral-container';
+            // 2. Calculate dynamic scale factor based on current window height
+            // We use a slightly aggressive scale factor to force a wider spread
+            const rawScale = window.innerHeight / BASE_HEIGHT_PX;
+            const scaleFactor = Math.max(0.8, rawScale * 1.2); // Start higher and scale 20% faster
             
-            // 4. GENERATE SPIRAL
-            // Golden Angle approximation
-            const goldenAngle = 137.508; 
-            
-            // Scale the spread and minRadius based on the window height
+            // 3. Apply scale factor to base constants
             const spread = BASE_SPREAD * scaleFactor; 
             const minRadius = BASE_MIN_RADIUS * scaleFactor; 
 
-            city.videos.forEach((video, vIndex) => {
-                const thumb = document.createElement('div');
-                thumb.className = 'thumb';
+            cityPositions.forEach((city, index) => {
+                // A. Create City Container
+                const node = document.createElement('div');
+                node.className = 'city-node';
+                node.style.left = `${city.x}%`;
+                node.style.top = `${city.y}%`;
+                
+                // B. Add Label (Name + Date)
+                const label = document.createElement('div');
+                label.className = 'city-label-group';
+                label.innerHTML = `
+                    <div class="city-date">${city.dates}</div>
+                    <div class="city-name">${city.city}</div>
+                `;
+                label.onclick = () => generateArchivalNote(city.city);
 
-                // --- RANDOM SIZE CALCULATION ---
-                // Generate a random factor between 0.0 and 1.0
-                const randomFactor = Math.random(); 
-                
-                // Calculate random width between MIN and MAX
-                const randomWidth = MIN_WIDTH + (MAX_WIDTH - MIN_WIDTH) * randomFactor;
-                
-                // Calculate corresponding height to maintain aspect ratio
-                const randomHeight = randomWidth / ASPECT_RATIO;
-                
-                // Apply random size
-                thumb.style.width = `${randomWidth}px`;
-                thumb.style.height = `${randomHeight}px`;
-                // ---------------------------------
-                
-                // Spiral Math
-                // r = c * sqrt(n)
-                const angle = vIndex * goldenAngle * (Math.PI / 180);
-                // Use scaled values for the radius calculation
-                const radius = minRadius + (spread * Math.sqrt(vIndex)); 
-                
-                const tx = Math.cos(angle) * radius;
-                const ty = Math.sin(angle) * radius;
+                node.appendChild(label);
 
-                thumb.style.transform = `translate(${tx}px, ${ty}px) rotate(${randomInt(-5, 5)}deg)`;
+                // C. Create Spiral Container
+                const spiral = document.createElement('div');
+                spiral.className = 'spiral-container';
                 
-                // Data
-                thumb.setAttribute('data-title', video.title);
-                thumb.style.backgroundImage = `url('https://img.youtube.com/vi/${video.id}/hqdefault.jpg')`;
+                // D. GENERATE SPIRAL
+                const goldenAngle = 137.508; 
+                
+                city.videos.forEach((video, vIndex) => {
+                    const thumb = document.createElement('div');
+                    thumb.className = 'thumb';
 
-                // Interaction
-                thumb.onclick = (e) => {
-                    e.stopPropagation();
-                    openOverlay(video.id);
-                };
+                    // --- RANDOM SIZE CALCULATION ---
+                    const randomFactor = Math.random(); 
+                    const randomWidth = MIN_WIDTH + (MAX_WIDTH - MIN_WIDTH) * randomFactor;
+                    const randomHeight = randomWidth / ASPECT_RATIO;
+                    
+                    thumb.style.width = `${randomWidth}px`;
+                    thumb.style.height = `${randomHeight}px`;
+                    
+                    // Spiral Math using scaled values
+                    const angle = vIndex * goldenAngle * (Math.PI / 180);
+                    const radius = minRadius + (spread * Math.sqrt(vIndex)); 
+                    
+                    const tx = Math.cos(angle) * radius;
+                    const ty = Math.sin(angle) * radius;
 
-                spiral.appendChild(thumb);
+                    thumb.style.transform = `translate(${tx}px, ${ty}px) rotate(${randomInt(-5, 5)}deg)`;
+                    
+                    // Data
+                    thumb.setAttribute('data-title', video.title);
+                    thumb.style.backgroundImage = `url('https://img.youtube.com/vi/${video.id}/hqdefault.jpg')`;
+
+                    // Interaction
+                    thumb.onclick = (e) => {
+                        e.stopPropagation();
+                        openOverlay(video.id);
+                    };
+
+                    spiral.appendChild(thumb);
+                });
+
+                node.appendChild(spiral);
+                appContainer.appendChild(node);
             });
+            
+            // Ensure connectors are drawn after nodes are in the DOM
+            drawLines();
+        }
 
-            node.appendChild(spiral);
-            appContainer.appendChild(node);
-        });
 
         // --- CONNECTORS ---
         function drawLines() {
@@ -784,9 +778,14 @@
         };
 
         // --- INIT ---
-        setRandomBackground();
-        drawLines();
-        window.addEventListener('resize', drawLines);
+        function initializeMap() {
+            setRandomBackground();
+            renderTourNodes(); 
+            // Rerun rendering on resize to recalculate spread
+            window.addEventListener('resize', renderTourNodes);
+        }
+
+        initializeMap();
 
     </script>
 </body>
