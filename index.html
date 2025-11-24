@@ -155,8 +155,7 @@
 
         .thumb {
             position: absolute;
-            width: 36px; /* Small "Contact Sheet" size */
-            height: 26px;
+            /* Size is now set dynamically via JavaScript */
             background-color: #222;
             background-size: cover;
             background-position: center;
@@ -172,8 +171,8 @@
 
         /* Hover Interaction: The "Lens" Effect */
         .thumb:hover {
-            width: 200px;
-            height: 112px; /* 16:9 */
+            width: 330px; /* Increased by 50% (220 * 1.5) */
+            height: 186px; /* Increased by 50% (124 * 1.5) */
             z-index: 999 !important; /* Force to absolute top */
             filter: grayscale(0%) contrast(100%) brightness(1);
             opacity: 1;
@@ -219,7 +218,6 @@
         }
 
         #video-container {
-            /* Maximize space within 95% of width or 90% of height (160vh) */
             width: min(95vw, 160vh); /* (16/9) * 90vh = 160vh */
             height: auto; 
             max-width: 1400px; /* Absolute pixel cap for massive monitors */
@@ -229,7 +227,7 @@
             background: #000;
         }
         
-        /* FIX: Ensure the placeholder wrapper fills the container */
+        /* Ensure the placeholder wrapper fills the container */
         #player-placeholder {
             width: 100%;
             height: 100%;
@@ -266,11 +264,10 @@
         /* Responsive */
         @media (max-width: 768px) {
             .city-name { font-size: 1.5rem; }
-            .thumb { width: 20px; height: 15px; } /* Tiny on mobile */
-            .thumb:hover { width: 140px; height: 78px; }
+            /* Scaled hover size for mobile: 160px * 1.5 = 240px; 90px * 1.5 = 135px */
+            .thumb:hover { width: 240px; height: 135px; } 
             
             #video-container {
-                /* For mobile, keep the limit at 80vh (142.22vh width) to ensure the button is visible */
                 width: min(95vw, 142.22vh); 
                 max-width: none; 
             }
@@ -305,8 +302,6 @@
 
     <script>
         // --- CONFIG & DATA (EASY TO CURATE) ---
-        
-        // Removed: VIDEO_COUNT and filler video pool (FILLER_IDS, FILLER_TITLES).
         
         /**
          * CORE_TOUR_DATA is the main list you should edit.
@@ -389,6 +384,14 @@
             videos: generateVideos(data.realVideos)
         }));
 
+        // --- THUMBNAIL SIZE CONSTANTS ---
+        // Sizes increased by 50% from (50/30 min) to (100/60 max)
+        const MIN_WIDTH = 75;  // 50 * 1.5
+        const MIN_HEIGHT = 45; // 30 * 1.5
+        const MAX_WIDTH = 150; // 100 * 1.5
+        const MAX_HEIGHT = 90; // 60 * 1.5
+        const ASPECT_RATIO = MIN_WIDTH / MIN_HEIGHT; 
+
         // --- LAYOUT ENGINE ---
 
         const appContainer = document.getElementById('app-container');
@@ -444,6 +447,21 @@
             city.videos.forEach((video, vIndex) => {
                 const thumb = document.createElement('div');
                 thumb.className = 'thumb';
+
+                // --- RANDOM SIZE CALCULATION ---
+                // Generate a random factor between 0.0 and 1.0
+                const randomFactor = Math.random(); 
+                
+                // Calculate random width between MIN and MAX
+                const randomWidth = MIN_WIDTH + (MAX_WIDTH - MIN_WIDTH) * randomFactor;
+                
+                // Calculate corresponding height to maintain aspect ratio
+                const randomHeight = randomWidth / ASPECT_RATIO;
+                
+                // Apply random size
+                thumb.style.width = `${randomWidth}px`;
+                thumb.style.height = `${randomHeight}px`;
+                // ---------------------------------
                 
                 // Spiral Math
                 // r = c * sqrt(n)
