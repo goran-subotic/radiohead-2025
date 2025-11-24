@@ -219,14 +219,22 @@
         }
 
         #video-container {
-            width: 80%;
-            max-width: 960px;
+            /* Maximize space within 95% of width or 90% of height (160vh) */
+            width: min(95vw, 160vh); /* (16/9) * 90vh = 160vh */
+            height: auto; 
+            max-width: 1400px; /* Absolute pixel cap for massive monitors */
             aspect-ratio: 16/9;
             border: 1px solid var(--rh-white);
             box-shadow: 0 0 50px rgba(255,255,255,0.1);
             background: #000;
         }
         
+        /* FIX: Ensure the placeholder wrapper fills the container */
+        #player-placeholder {
+            width: 100%;
+            height: 100%;
+        }
+
         iframe { width: 100%; height: 100%; border: none; }
 
         #close-btn {
@@ -260,6 +268,12 @@
             .city-name { font-size: 1.5rem; }
             .thumb { width: 20px; height: 15px; } /* Tiny on mobile */
             .thumb:hover { width: 140px; height: 78px; }
+            
+            #video-container {
+                /* For mobile, keep the limit at 80vh (142.22vh width) to ensure the button is visible */
+                width: min(95vw, 142.22vh); 
+                max-width: none; 
+            }
         }
 
     </style>
