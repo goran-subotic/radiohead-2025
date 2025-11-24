@@ -657,6 +657,17 @@
         });
 
         // --- RENDER ---
+        
+        // --- Spiral Scaling Parameters ---
+        // Baseline height for a scale factor of 1.0
+        const BASE_HEIGHT_PX = 900; 
+        // Calculate dynamic scale factor, ensuring it doesn't drop too low on tiny screens
+        const scaleFactor = Math.max(0.7, window.innerHeight / BASE_HEIGHT_PX); 
+        
+        // Base Spiral Constants (fixed pixel values used for calculation at 1.0 scale)
+        const BASE_MIN_RADIUS = 65; 
+        const BASE_SPREAD = 16;     
+
         cityPositions.forEach((city, index) => {
             // 1. Create City Container
             const node = document.createElement('div');
@@ -683,10 +694,10 @@
             // 4. GENERATE SPIRAL
             // Golden Angle approximation
             const goldenAngle = 137.508; 
-            // How far apart thumbnails are
-            const spread = 16; 
-            // Start distance from center (to clear the text)
-            const minRadius = 65; 
+            
+            // Scale the spread and minRadius based on the window height
+            const spread = BASE_SPREAD * scaleFactor; 
+            const minRadius = BASE_MIN_RADIUS * scaleFactor; 
 
             city.videos.forEach((video, vIndex) => {
                 const thumb = document.createElement('div');
@@ -710,7 +721,8 @@
                 // Spiral Math
                 // r = c * sqrt(n)
                 const angle = vIndex * goldenAngle * (Math.PI / 180);
-                const radius = minRadius + (spread * Math.sqrt(vIndex)); // Tighter packing
+                // Use scaled values for the radius calculation
+                const radius = minRadius + (spread * Math.sqrt(vIndex)); 
                 
                 const tx = Math.cos(angle) * radius;
                 const ty = Math.sin(angle) * radius;
