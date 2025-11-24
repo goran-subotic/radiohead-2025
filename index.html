@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RADIOHEAD | EUROPE 2025</title>
+    <style>
+        /* --- FONTS & BASE --- */
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Syne+Mono&family=Xanh+Mono&display=swap');
+
+        :root {
+            --rh-black: #050505;
+            --rh-white: #e0e0e0;
+            --rh-red: #ff3300;
+            --rh-acid: #ccff00;
+            --rh-dim: #333;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: var(--rh-black);
+            font-family: 'Share Tech Mono', monospace;
+            color: var(--rh-white);
+            cursor: crosshair;
+        }
+
+        /* --- BACKGROUND --- */
+        #bg-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://rsrc.wasteheadquarters.com/OWU3NDY5YzBlZmM2YjY2OWFkMDc3YzJh/5_MADRID_RADIOHEAD_PHOTO_BY_ALEX_LAKE_TWOSHORTDAYS_9H0A1426.jpg');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.4;
+            filter: contrast(140%) grayscale(100%) brightness(0.6);
+            z-index: 0;
+        }
+        
+        #noise {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.12;
+            background: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E');
+        }
+
+        /* --- TITLE --- */
+        #main-title-img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 70vw;
+            max-width: 800px;
+            mix-blend-mode: exclusion;
+            pointer-events: none;
+            z-index: 2;
+            opacity: 0.7;
+        }
+
+        /* --- SVG LINES LAYER --- */
+        #connections-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        path.connector {
+            fill: none;
+            stroke: var(--rh-white);
+            stroke-width: 1;
+            stroke-dasharray: 2, 4; /* Dotted technical line */
+            vector-effect: non-scaling-stroke;
+            opacity: 0.4;
+        }
+
+        /* --- CITY NODES --- */
+        .city-node {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            z-index: 50; 
+            text-align: center;
+            /* Allow clicking through the container to hit overlapping thumbnails if needed */
+            pointer-events: none; 
+        }
+
+        /* The clickable text part */
+        .city-label-group {
+            position: relative;
+            z-index: 200; /* ALWAYS ON TOP of thumbnails (rest state) */
+            pointer-events: auto;
+            display: inline-block;
+        }
+
+        .city-name {
+            font-family: 'Xanh Mono', monospace;
+            font-size: 2.5rem;
+            text-transform: uppercase;
+            font-weight: bold;
+            color: var(--rh-white);
+            background: var(--rh-black);
+            padding: 4px 12px;
+            border: 1px solid var(--rh-dim);
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(0,0,0,0.8);
+        }
+
+        .city-name:hover {
+            background: var(--rh-white);
+            color: var(--rh-black);
+            border-color: var(--rh-white);
+        }
+
+        .city-date {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1rem;
+            color: var(--rh-acid);
+            background: #000;
+            padding: 2px 6px;
+            position: absolute;
+            top: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            border: 1px solid var(--rh-acid);
+            z-index: 201; /* Above city name */
+            letter-spacing: 1px;
+        }
+
+        /* --- THUMBNAIL SPIRAL --- */
+        .spiral-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .thumb {
+            position: absolute;
+            width: 36px; /* Small "Contact Sheet" size */
+            height: 26px;
+            background-color: #222;
+            background-size: cover;
+            background-position: center;
+            border: 1px solid #444;
+            pointer-events: auto;
+            cursor: pointer;
+            transition: all 0.15s ease-out;
+            filter: grayscale(100%) contrast(120%) brightness(0.8);
+            opacity: 0.7;
+            /* Center the anchor point for scaling */
+            transform-origin: center center; 
+        }
+
+        /* Hover Interaction: The "Lens" Effect */
+        .thumb:hover {
+            width: 200px;
+            height: 112px; /* 16:9 */
+            z-index: 999 !important; /* Force to absolute top */
+            filter: grayscale(0%) contrast(100%) brightness(1);
+            opacity: 1;
+            border: 2px solid var(--rh-acid);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.9);
+            border-radius: 0;
+        }
+
+        /* Tooltip on hover */
+        .thumb::after {
+            content: attr(data-title);
+            position: absolute;
+            bottom: -20px;
+            left: 0;
+            background: var(--rh-acid);
+            color: black;
+            font-size: 10px;
+            padding: 2px 4px;
+            white-space: nowrap;
+            display: none;
+            font-weight: bold;
+            box-shadow: 2px 2px 0 black;
+        }
+        .thumb:hover::after {
+            display: block;
+        }
+
+
+        /* --- OVERLAY --- */
+        #video-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            backdrop-filter: blur(8px);
+        }
+
+        #video-container {
+            width: 80%;
+            max-width: 960px;
+            aspect-ratio: 16/9;
+            border: 1px solid var(--rh-white);
+            box-shadow: 0 0 50px rgba(255,255,255,0.1);
+            background: #000;
+        }
+        
+        iframe { width: 100%; height: 100%; border: none; }
+
+        #close-btn {
+            margin-top: 25px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1.2rem;
+            background: transparent;
+            color: var(--rh-white);
+            border: 1px solid var(--rh-white);
+            padding: 10px 40px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: 0.2s;
+        }
+        #close-btn:hover { background: var(--rh-white); color: black; }
+
+        /* --- UI ELEMENTS --- */
+        .glitch-footer {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            font-size: 11px;
+            color: #555;
+            z-index: 5;
+            max-width: 300px;
+            line-height: 1.4;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .city-name { font-size: 1.5rem; }
+            .thumb { width: 20px; height: 15px; } /* Tiny on mobile */
+            .thumb:hover { width: 140px; height: 78px; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="bg-layer"></div>
+    <div id="noise"></div>
+    <img id="main-title-img" src="https://radiohead.com/b1b.jpg" alt="Radiohead Art">
+
+    <svg id="connections-layer">
+        <path id="tour-path" class="connector" d="" />
+    </svg>
+
+    <div id="app-container"></div>
+
+    <div class="glitch-footer">
+        [SYSTEM_STATUS: ONLINE]<br>
+        ARCHIVE_SIZE: 200+ FILES<br>
+        MODE: SPIRAL_DISTRIBUTION
+    </div>
+
+    <div id="video-overlay">
+        <div id="video-container">
+            <div id="player-placeholder"></div>
+        </div>
+        <button id="close-btn">DISCONNECT</button>
+    </div>
+
+    <script>
+        // --- CONFIG & DATA ---
+        // Generating huge amounts of data to prove the spiral concept
+        function generateVideos(realVideos, totalCount) {
+            const pool = [...realVideos];
+            const fillerIds = ["6dBywGE_w-c", "-37QCDxOcak", "XXsRdU84RuI", "BD86XmHAOQI", "TTAU7lLDZYU", "yI2dS240608"];
+            const fillerTitles = ["Idioteque", "Nude", "The Gloaming", "2+2=5", "Bloom", "Ful Stop", "Identikit", "Burn The Witch", "Pyramid Song", "Talk Show Host"];
+            
+            for(let i=pool.length; i<totalCount; i++) {
+                pool.push({
+                    id: fillerIds[Math.floor(Math.random() * fillerIds.length)],
+                    title: fillerTitles[Math.floor(Math.random() * fillerTitles.length)] + ` [FILE_${i+100}]`
+                });
+            }
+            return pool;
+        }
+
+        // 40 Videos per city to test density
+        const VIDEO_COUNT = 40; 
+
+        const tourData = [
+            {
+                city: "Madrid", dates: "NOV 04-08",
+                videos: generateVideos([{ id: "6dBywGE_w-c", title: "Everything In Its Right Place" }, { id: "-37QCDxOcak", title: "Full Show N2" }, { id: "BD86XmHAOQI", title: "Let Down" }], VIDEO_COUNT) 
+            },
+            {
+                city: "Bologna", dates: "NOV 14-18",
+                videos: generateVideos([{ id: "XXsRdU84RuI", title: "Kid A" }], VIDEO_COUNT)
+            },
+            {
+                city: "London", dates: "NOV 21-25",
+                videos: generateVideos([{ id: "vOa--Dhu11M", title: "Street Spirit" }, { id: "8nTFjVm9sTQ", title: "Paranoid Android" }], VIDEO_COUNT)
+            },
+            {
+                city: "Copenhagen", dates: "DEC 01-05",
+                videos: generateVideos([{ id: "TTAU7lLDZYU", title: "Daydreaming" }], VIDEO_COUNT)
+            },
+            {
+                city: "Berlin", dates: "DEC 08-12",
+                videos: generateVideos([{ id: "yI2dS240608", title: "Weird Fishes" }], VIDEO_COUNT)
+            }
+        ];
+
+        const appContainer = document.getElementById('app-container');
+        const svgPath = document.getElementById('tour-path');
+        
+        // --- UTILS ---
+        function randomInt(min, max) { return Math.floor(Math.random() * (max - min + 1) + min); }
+
+        // --- LAYOUT ENGINE ---
+        // Using "Zones" to keep cities somewhat apart
+        const zones = [
+            { x: [15, 25], y: [15, 25] }, // Top Left
+            { x: [45, 55], y: [45, 55] }, // Center
+            { x: [75, 85], y: [15, 25] }, // Top Right
+            { x: [15, 25], y: [65, 75] }, // Bottom Left
+            { x: [75, 85], y: [65, 75] }  // Bottom Right
+        ];
+        
+        const cityPositions = tourData.map((data, index) => {
+            const zone = zones[index % zones.length];
+            return {
+                ...data,
+                x: randomInt(zone.x[0], zone.x[1]), 
+                y: randomInt(zone.y[0], zone.y[1])
+            };
+        });
+
+        // --- RENDER ---
+        cityPositions.forEach((city, index) => {
+            // 1. Create City Container
+            const node = document.createElement('div');
+            node.className = 'city-node';
+            node.style.left = `${city.x}%`;
+            node.style.top = `${city.y}%`;
+            
+            // 2. Add Label (Name + Date)
+            const label = document.createElement('div');
+            label.className = 'city-label-group';
+            label.innerHTML = `
+                <div class="city-date">${city.dates}</div>
+                <div class="city-name">${city.city}</div>
+            `;
+            node.appendChild(label);
+
+            // 3. Create Spiral Container
+            const spiral = document.createElement('div');
+            spiral.className = 'spiral-container';
+            
+            // 4. GENERATE SPIRAL
+            // Golden Angle approximation
+            const goldenAngle = 137.508; 
+            // How far apart thumbnails are
+            const spread = 16; 
+            // Start distance from center (to clear the text)
+            const minRadius = 65; 
+
+            city.videos.forEach((video, vIndex) => {
+                const thumb = document.createElement('div');
+                thumb.className = 'thumb';
+                
+                // Spiral Math
+                // r = c * sqrt(n)
+                const angle = vIndex * goldenAngle * (Math.PI / 180);
+                const radius = minRadius + (spread * Math.sqrt(vIndex)); // Tighter packing
+                
+                const tx = Math.cos(angle) * radius;
+                const ty = Math.sin(angle) * radius;
+
+                thumb.style.transform = `translate(${tx}px, ${ty}px) rotate(${randomInt(-5, 5)}deg)`;
+                
+                // Data
+                thumb.setAttribute('data-title', video.title);
+                // Preload BG on hover logic to save bandwidth, or load all low-res?
+                // Let's lazy load slightly by setting it only when created
+                thumb.style.backgroundImage = `url('https://img.youtube.com/vi/${video.id}/hqdefault.jpg')`;
+
+                // Interaction
+                thumb.onclick = (e) => {
+                    e.stopPropagation();
+                    openOverlay(video.id);
+                };
+
+                // Z-Index Handling: Hovered items need to jump out of the spiral stack
+                thumb.onmouseenter = () => {
+                   // Styles handled by CSS :hover, but we ensure parent z-index doesn't clip
+                };
+                
+                spiral.appendChild(thumb);
+            });
+
+            node.appendChild(spiral);
+            appContainer.appendChild(node);
+        });
+
+        // --- CONNECTORS ---
+        function drawLines() {
+            let pathD = "";
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+
+            cityPositions.forEach((city, i) => {
+                const cx = (city.x / 100) * width;
+                const cy = (city.y / 100) * height;
+
+                if (i === 0) {
+                    pathD += `M ${cx} ${cy} `;
+                } else {
+                    const prevX = (cityPositions[i-1].x / 100) * width;
+                    const prevY = (cityPositions[i-1].y / 100) * height;
+                    
+                    // Jagged / Glitchy Line connection
+                    pathD += `L ${prevX} ${prevY} L ${cx} ${cy} `;
+                }
+            });
+            svgPath.setAttribute('d', pathD);
+        }
+
+        // --- OVERLAY LOGIC ---
+        const overlay = document.getElementById('video-overlay');
+        const playerContainer = document.getElementById('player-placeholder');
+        
+        function openOverlay(videoId) {
+            overlay.style.display = 'flex';
+            playerContainer.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&theme=dark&color=white" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+        }
+
+        document.getElementById('close-btn').onclick = () => {
+            overlay.style.display = 'none';
+            playerContainer.innerHTML = '';
+        };
+
+        // --- INIT ---
+        drawLines();
+        window.addEventListener('resize', drawLines);
+
+    </script>
+</body>
+</html>
