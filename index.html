@@ -14,6 +14,7 @@
             --rh-red: #ff3300;
             --rh-acid: #ccff00;
             --rh-dim: #333;
+            --rh-code-bg: rgba(0, 0, 0, 0.8);
         }
 
         body, html {
@@ -35,7 +36,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url('https://rsrc.wasteheadquarters.com/OWU3NDY5YzBlZmM2YjY2OWFkMDc3YzJh/5_MADRID_RADIOHEAD_PHOTO_BY_ALEX_LAKE_TWOSHORTDAYS_9H0A1426.jpg');
+            /* background-image is set by JavaScript for random loading */
             background-size: cover;
             background-position: center;
             opacity: 0.4;
@@ -105,6 +106,7 @@
             z-index: 200; /* ALWAYS ON TOP of thumbnails (rest state) */
             pointer-events: auto;
             display: inline-block;
+            cursor: pointer; /* Change cursor to indicate clickability */
         }
 
         .city-name {
@@ -118,6 +120,7 @@
             border: 1px solid var(--rh-dim);
             transition: all 0.3s ease;
             box-shadow: 0 0 10px rgba(0,0,0,0.8);
+            display: block; /* Make sure the name takes up the space */
         }
 
         .city-name:hover {
@@ -163,18 +166,18 @@
             pointer-events: auto;
             cursor: pointer;
             transition: all 0.15s ease-out;
-            filter: grayscale(100%) contrast(120%) brightness(0.8);
-            opacity: 0.7;
+            /* Filter removed to display thumbnails in color */
+            opacity: 0.9; /* Slightly dimmed but in color */
             /* Center the anchor point for scaling */
             transform-origin: center center; 
         }
 
         /* Hover Interaction: The "Lens" Effect */
         .thumb:hover {
-            width: 330px; /* Increased by 50% (220 * 1.5) */
-            height: 186px; /* Increased by 50% (124 * 1.5) */
+            width: 495px; /* Increased by 50% from 330px */
+            height: 279px; /* Increased by 50% from 186px */
             z-index: 999 !important; /* Force to absolute top */
-            filter: grayscale(0%) contrast(100%) brightness(1);
+            filter: none; /* Ensure full color and brightness on hover */
             opacity: 1;
             border: 2px solid var(--rh-acid);
             box-shadow: 0 10px 30px rgba(0,0,0,0.9);
@@ -261,15 +264,66 @@
             line-height: 1.4;
         }
 
+        /* --- ARCHIVAL CONSOLE --- */
+        #analysis-panel {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 350px;
+            max-height: 250px;
+            background: var(--rh-code-bg);
+            border: 1px solid var(--rh-acid);
+            padding: 15px;
+            z-index: 1500;
+            overflow-y: auto;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            box-shadow: 0 0 15px var(--rh-acid);
+            display: none; /* Hidden by default */
+        }
+        #analysis-panel h3 {
+            font-size: 1.1rem;
+            color: var(--rh-acid);
+            margin: 0 0 10px 0;
+            text-transform: uppercase;
+        }
+        #analysis-panel p {
+            margin: 0 0 10px 0;
+        }
+        .loading-text {
+            color: #ffaa00;
+        }
+        .citation-link {
+            font-size: 0.75rem;
+            color: var(--rh-dim);
+            text-decoration: none;
+            display: block;
+            margin-top: 5px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+        .citation-link:hover {
+            color: var(--rh-acid);
+        }
+
+
         /* Responsive */
         @media (max-width: 768px) {
             .city-name { font-size: 1.5rem; }
-            /* Scaled hover size for mobile: 160px * 1.5 = 240px; 90px * 1.5 = 135px */
-            .thumb:hover { width: 240px; height: 135px; } 
+            /* Scaled hover size for mobile: 240px * 1.5 = 360px; 135px * 1.5 = 202.5px */
+            .thumb:hover { width: 360px; height: 203px; } 
             
             #video-container {
                 width: min(95vw, 142.22vh); 
                 max-width: none; 
+            }
+            
+            #analysis-panel {
+                width: 90vw;
+                right: 5vw;
+                left: 5vw;
+                max-height: 200px;
             }
         }
 
@@ -291,6 +345,14 @@
         [SYSTEM_STATUS: ONLINE]<br>
         ARCHIVE_SIZE: (Curated Videos Only)<br>
         MODE: SPIRAL_DISTRIBUTION
+    </div>
+
+    <!-- New Archival Analysis Console -->
+    <div id="analysis-panel">
+        <h3>ARCHIVAL CONSOLE ✨</h3>
+        <div id="analysis-content">
+            Select a city label (e.g., 'Madrid') for historical concert context.
+        </div>
     </div>
 
     <div id="video-overlay">
@@ -382,7 +444,116 @@
             }
         ];
 
+        // --- NEW BACKGROUND IMAGES ARRAY ---
+        const BACKGROUND_IMAGES = [
+            'https://rsrc.wasteheadquarters.com/ZDlkOTQ0MzVjMzAwODJlMjZhNzg0MzE3/6_Bologna__RADIOHEAD_PHOTO_BY_ALEX_LAKE_TWOSHORTDAYS_9H0A2152.jpg',
+            'https://rsrc.wasteheadquarters.com/YmFkM2U1YmNiZWQ0MWM2MzQ1ZDZkYmI2/7_Bologna__RADIOHEAD_PHOTO_BY_ALEX_LAKE_TWOSHORTDAYS_9H0A2071.jpg',
+            'https://rsrc.wasteheadquarters.com/MzUyYjk5OTU3NjA0ZDQxNzBhZGYxNTlk/8_Bologna__RADIOHEAD_PHOTO_BY_ALEX_LAKE_TWOSHORTDAYS_9H0A1469.jpg',
+            'https://rsrc.wasteheadquarters.com/ZGVmNzE5YWFiZmY5MTA2OWVhOWIwMzQw/1_Bologna__RADIOHEAD_PHOTO_BY_ALEX_LAKE_TWOSHORTDAYS_9H0A1453.jpg',
+            'https://rsrc.wasteheadquarters.com/Yzk3ODY1NDg5ODMzZDY0Y2FlNTYzYWEy/2_Bologna__RADIOHEAD_PHOTO_BY_ALEX_LAKE_TWOSHORTDAYS_9H0A1696.jpg',
+            'https://rsrc.wasteheadquarters.com/ODJhNjVkMWNjOGJmNWM4NzAwMzNmNjgw/4_Bologna__RADIOHEAD_PHOTO_BY_ALEX_LAKE_TWOSHORTDAYS_IMG_9442.jpg',
+            'https://rsrc.wasteheadquarters.com/ZGIzNzNjY2Q0MDhkYzU0ZDM1ZmY4NTM3/5_Bologna__RADIOHEAD_PHOTO_BY_ALEX_LAKE_TWOSHORTDAYS_9H0A2569.jpg',
+            'https://rsrc.wasteheadquarters.com/YWMzOGYwNmVjMWM3ZmU0MjM4MzQ2YjZl/9_Bologna__RADIOHEAD_PHOTO_BY_ALEX_LAKE_TWOSHORTDAYS_9H0A2126.jpg',
+            'https://rsrc.wasteheadquarters.com/YTc4MzJhYTIwZWViNmJmY2JhMjY0ZmZh/10_Bologna__RADIOHEAD_PHOTO_BY_ALEX_LAKE_TWOSHORTDAYS_9H0A2258.jpg',
+            'https://rsrc.wasteheadquarters.com/YjVhNzI1NDVkNmQ4NjUyNWRjYTE3NjI2/11_Bologna__RADIOHEAD_PHOTO_BY_ALEX_LAKE_TWOSHORTDAYS_9H0A1884.jpg'
+        ];
 
+        // --- LLM API INTEGRATION ---
+        const apiKey = ""; 
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+        const analysisPanel = document.getElementById('analysis-panel');
+        const analysisContent = document.getElementById('analysis-content');
+
+        /**
+         * Robust fetch with exponential backoff for API calls.
+         */
+        async function backoffFetch(url, options, retries = 3) {
+            for (let i = 0; i < retries; i++) {
+                try {
+                    const response = await fetch(url, options);
+                    if (response.status === 429 && i < retries - 1) {
+                        // Too Many Requests, wait and retry
+                        const delay = Math.pow(2, i) * 1000 + Math.random() * 1000;
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                        continue;
+                    }
+                    if (!response.ok) {
+                         throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response;
+                } catch (error) {
+                    if (i === retries - 1) {
+                        throw error;
+                    }
+                }
+            }
+        }
+        
+        /**
+         * Generates an archival note for a city using Gemini and Google Search grounding.
+         * @param {string} city - The city name to search for.
+         */
+        async function generateArchivalNote(city) {
+            analysisPanel.style.display = 'block';
+            analysisContent.innerHTML = `<p class="loading-text">[SYSTEM_COMM] Fetching archival context for ${city}... Please wait.</p>`;
+
+            const userQuery = `Find historical information about Radiohead playing live in ${city}, including notable setlist differences or unique performances. Summarize the findings in a single, short paragraph.`;
+            
+            const systemPrompt = "Act as a specialized music archivist and historian for the band Radiohead. Provide a concise, highly engaging, single-paragraph analysis focusing on the band's history and potential significance of the upcoming show in the specified location. Use a tone that is technical and reverent, reflecting the band's aesthetic. Do not use quotes. Use only facts from the search results.";
+
+            const payload = {
+                contents: [{ parts: [{ text: userQuery }] }],
+                tools: [{ "google_search": {} }],
+                systemInstruction: {
+                    parts: [{ text: systemPrompt }]
+                },
+            };
+
+            try {
+                const response = await backoffFetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+                const candidate = result.candidates?.[0];
+
+                if (candidate && candidate.content?.parts?.[0]?.text) {
+                    const text = candidate.content.parts[0].text;
+                    let sourcesHtml = '';
+                    
+                    const groundingMetadata = candidate.groundingMetadata;
+                    if (groundingMetadata && groundingMetadata.groundingAttributions) {
+                        const sources = groundingMetadata.groundingAttributions
+                            .map(attribution => ({
+                                uri: attribution.web?.uri,
+                                title: attribution.web?.title,
+                            }))
+                            .filter(source => source.uri && source.title)
+                            .slice(0, 3); // Limit to top 3 sources for display
+
+                        if (sources.length > 0) {
+                            sourcesHtml = '<h4>[DATA SOURCES]</h4>';
+                            sources.forEach((source, index) => {
+                                sourcesHtml += `<a href="${source.uri}" target="_blank" class="citation-link" title="${source.title}">[SRC ${index + 1}] ${source.title}</a>`;
+                            });
+                        }
+                    }
+
+                    analysisContent.innerHTML = `
+                        <p>${text}</p>
+                        ${sourcesHtml}
+                    `;
+                } else {
+                    analysisContent.innerHTML = `<p class="loading-text">[SYSTEM_ERROR] Analysis failed. No content generated for ${city}.</p>`;
+                }
+            } catch (error) {
+                console.error("Gemini API Error:", error);
+                analysisContent.innerHTML = `<p class="loading-text">[SYSTEM_ERROR] Connection failure or API fault. Unable to retrieve archival data.</p>`;
+            }
+        }
+        
         // --- LOGIC FUNCTIONS (DO NOT EDIT BELOW) ---
 
         /**
@@ -396,6 +567,16 @@
         }
 
         function randomInt(min, max) { return Math.floor(Math.random() * (max - min + 1) + min); }
+        
+        /**
+         * Selects a random image from the BACKGROUND_IMAGES array and applies it to the background layer.
+         */
+        function setRandomBackground() {
+            const bgLayer = document.getElementById('bg-layer');
+            const randomIndex = Math.floor(Math.random() * BACKGROUND_IMAGES.length);
+            const selectedUrl = BACKGROUND_IMAGES[randomIndex];
+            bgLayer.style.backgroundImage = `url('${selectedUrl}')`;
+        }
 
         // Process CORE_TOUR_DATA (no simulation/filler is added now)
         const tourData = CORE_TOUR_DATA.map(data => ({
@@ -449,6 +630,9 @@
                 <div class="city-date">${city.dates}</div>
                 <div class="city-name">${city.city}</div>
             `;
+            // Attach the LLM feature handler to the city label group
+            label.onclick = () => generateArchivalNote(city.city);
+
             node.appendChild(label);
 
             // 3. Create Spiral Container
@@ -547,6 +731,7 @@
         };
 
         // --- INIT ---
+        setRandomBackground();
         drawLines();
         window.addEventListener('resize', drawLines);
 
