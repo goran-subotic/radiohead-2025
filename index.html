@@ -278,7 +278,7 @@
 
     <div class="glitch-footer">
         [SYSTEM_STATUS: ONLINE]<br>
-        ARCHIVE_SIZE: 200+ FILES<br>
+        ARCHIVE_SIZE: (Curated Videos Only)<br>
         MODE: SPIRAL_DISTRIBUTION
     </div>
 
@@ -292,17 +292,13 @@
     <script>
         // --- CONFIG & DATA (EASY TO CURATE) ---
         
-        // Configuration for the simulation (used for testing density)
-        const VIDEO_COUNT = 40; // Total videos to display per city (including real videos)
+        // Removed: VIDEO_COUNT and filler video pool (FILLER_IDS, FILLER_TITLES).
         
-        // Filler video pool used for generating extra thumbnails to simulate high density
-        const FILLER_IDS = ["6dBywGE_w-c", "-37QCDxOcak", "XXsRdU84RuI", "BD86XmHAOQI", "TTAU7lLDZYU", "yI2dS240608"];
-        const FILLER_TITLES = ["Idioteque", "Nude", "The Gloaming", "2+2=5", "Bloom", "Ful Stop", "Identikit", "Burn The Witch", "Pyramid Song", "Talk Show Host"];
-
         /**
          * CORE_TOUR_DATA is the main list you should edit.
          * Add your confirmed videos to the 'realVideos' array for each city.
          * The format is: { id: "YOUTUBE_ID", title: "Video Title" }
+         * Only manually entered videos will be displayed, no filler content.
          */
         const CORE_TOUR_DATA = [
             {
@@ -362,29 +358,21 @@
         // --- LOGIC FUNCTIONS (DO NOT EDIT BELOW) ---
 
         /**
-         * Mixes the real videos with filler videos up to the target VIDEO_COUNT.
+         * Returns only the manually entered videos. Simulation logic has been removed.
          * @param {Array} realVideos - The curated list of videos.
-         * @param {number} totalCount - The target number of videos to generate.
-         * @returns {Array} A mixed array of video data.
+         * @returns {Array} The curated list of videos only.
          */
-        function generateVideos(realVideos, totalCount) {
-            const pool = [...realVideos];
-            
-            for(let i=pool.length; i<totalCount; i++) {
-                pool.push({
-                    id: FILLER_IDS[Math.floor(Math.random() * FILLER_IDS.length)],
-                    title: FILLER_TITLES[Math.floor(Math.random() * FILLER_TITLES.length)] + ` [SIMULATION_${i - realVideos.length + 1}]`
-                });
-            }
-            return pool;
+        function generateVideos(realVideos) {
+            // Only return the real videos, simulation logic has been removed
+            return realVideos;
         }
 
         function randomInt(min, max) { return Math.floor(Math.random() * (max - min + 1) + min); }
 
-        // Process CORE_TOUR_DATA by adding simulated videos
+        // Process CORE_TOUR_DATA (no simulation/filler is added now)
         const tourData = CORE_TOUR_DATA.map(data => ({
             ...data,
-            videos: generateVideos(data.realVideos, VIDEO_COUNT)
+            videos: generateVideos(data.realVideos)
         }));
 
         // --- LAYOUT ENGINE ---
