@@ -83,10 +83,10 @@
         path.connector {
             fill: none;
             stroke: var(--rh-white);
-            stroke-width: 1;
+            stroke-width: 2; /* Increased thickness from 1 to 2 */
             stroke-dasharray: 2, 4; /* Dotted technical line */
             vector-effect: non-scaling-stroke;
-            opacity: 0.4;
+            opacity: 0.6; /* Slight increase in opacity for visibility */
         }
 
         /* --- CITY NODES --- */
@@ -293,11 +293,11 @@
         // --- CONFIG & DATA (EASY TO CURATE) ---
         
         // Configuration for the simulation (used for testing density)
-        const VIDEO_COUNT = 0; // Total videos to display per city (including real videos)
+        const VIDEO_COUNT = 40; // Total videos to display per city (including real videos)
         
         // Filler video pool used for generating extra thumbnails to simulate high density
-        const FILLER_IDS = [];
-        const FILLER_TITLES = [];
+        const FILLER_IDS = ["6dBywGE_w-c", "-37QCDxOcak", "XXsRdU84RuI", "BD86XmHAOQI", "TTAU7lLDZYU", "yI2dS240608"];
+        const FILLER_TITLES = ["Idioteque", "Nude", "The Gloaming", "2+2=5", "Bloom", "Ful Stop", "Identikit", "Burn The Witch", "Pyramid Song", "Talk Show Host"];
 
         /**
          * CORE_TOUR_DATA is the main list you should edit.
