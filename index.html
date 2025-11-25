@@ -10,6 +10,7 @@
     <meta name="keywords" content="Radiohead, Europe 2025, Tour, Concerts, Thom Yorke, Jonny Greenwood, Live Music, Interactive Map, Setlist, Archives">
     <meta name="author" content="Radiohead Tour Archives">
     <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://radiohead.com/europe2025">
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
@@ -56,7 +57,6 @@
             left: 0;
             width: 100%;
             height: 100%;
-            /* background-image is set by JavaScript for random loading */
             background-size: cover;
             background-position: center;
             opacity: 0.4;
@@ -76,19 +76,18 @@
             background: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E');
         }
 
-        /* --- HUGE YEAR DISPLAY (Updated Font) --- */
+        /* --- HUGE YEAR DISPLAY --- */
         #tour-year-display {
             position: fixed;
             top: 20px;
             left: 50%;
             transform: translateX(-50%);
-            /* Changed to Xanh Mono for that distinct Radiohead serif look */
             font-family: 'Xanh Mono', monospace; 
-            font-size: 18vw; /* Slightly larger for impact */
+            font-size: 18vw;
             font-weight: 400;
             color: var(--rh-acid);
-            opacity: 0.15; /* Slightly more visible */
-            z-index: 2; /* Above background/noise, below connections */
+            opacity: 0.15;
+            z-index: 2; 
             pointer-events: none;
             letter-spacing: 2vw;
             text-shadow: 0 0 20px rgba(204, 255, 0, 0.2);
@@ -106,7 +105,7 @@
             max-width: 800px;
             mix-blend-mode: exclusion;
             pointer-events: none;
-            z-index: 3; /* Above year */
+            z-index: 3;
             opacity: 0.7;
         }
 
@@ -130,29 +129,45 @@
             opacity: 0.6;
         }
 
-        /* --- CITY NODES --- */
+        /* --- LAYOUT CONTAINERS --- */
+        /* Container for graphical elements (spirals, thumbs) */
+        #app-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 50; /* Base graphic layer */
+            pointer-events: none; /* Let clicks pass to background/shards */
+        }
+
+        /* Container specifically for text labels to guarantee they sit on top */
+        #labels-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 4000; /* Extremely high, above thumbs (1500) and everything else */
+            pointer-events: none;
+        }
+
+        /* --- CITY NODES (Graphics) --- */
         .city-node {
             position: absolute;
             transform: translate(-50%, -50%);
-            z-index: 50; 
             text-align: center;
             pointer-events: none; 
         }
 
-        /* FIX: Z-Index Hierarchy for Mobile Glitch 
-           Overlay: 5000
-           City Labels: 2000 (Always on top of content)
-           Hovered Thumb: 1500
-           Normal Content: < 1000
-        */
-
-        /* The clickable text part */
-        .city-label-group {
-            position: relative;
-            z-index: 2000; /* UPDATED: High z-index to ensure text stays on top */
-            pointer-events: auto;
+        /* --- CITY LABELS (Text) --- */
+        /* Wraps the name/date inside the high-z labels-container */
+        .city-label-wrapper {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            pointer-events: auto; /* Re-enable clicks if needed, or block selection */
             display: inline-block;
-            /* cursor removed as interaction was removed */
         }
 
         .city-name {
@@ -187,7 +202,7 @@
             transform: translateX(-50%);
             white-space: nowrap;
             border: 1px solid var(--rh-acid);
-            z-index: 2001; /* Above even the city name box */
+            z-index: 4001;
             letter-spacing: 1px;
         }
 
@@ -215,11 +230,10 @@
             transform-origin: center center; 
         }
 
-        /* Hover Interaction: The "Lens" Effect */
         .thumb:hover {
             width: 495px; 
             height: 279px; 
-            z-index: 1500 !important; /* UPDATED: High, but below City Labels (2000) */
+            z-index: 1500 !important; /* Still high, but well below #labels-container (4000) */
             filter: none;
             opacity: 1;
             border: 2px solid var(--rh-acid);
@@ -227,7 +241,6 @@
             border-radius: 0;
         }
 
-        /* Tooltip on hover */
         .thumb::after {
             content: attr(data-title);
             position: absolute;
@@ -246,7 +259,6 @@
             display: block;
         }
 
-
         /* --- OVERLAY --- */
         #video-overlay {
             display: none;
@@ -256,7 +268,7 @@
             width: 100%;
             height: 100%;
             background: rgba(0,0,0,0.95);
-            z-index: 5000; /* UPDATED: Absolute top layer */
+            z-index: 5000; /* Absolute Top */
             justify-content: center;
             align-items: center;
             flex-direction: column;
@@ -336,7 +348,11 @@
         <path id="tour-path" class="connector" d="" />
     </svg>
 
+    <!-- Container for graphics (Thumbnails, Lines) -->
     <div id="app-container"></div>
+    
+    <!-- NEW: Container for Text Labels (Always on top) -->
+    <div id="labels-container"></div>
 
     <div class="glitch-footer">
         [SYSTEM_STATUS: ONLINE]<br>
@@ -483,6 +499,7 @@
         ];
 
         const appContainer = document.getElementById('app-container');
+        const labelsContainer = document.getElementById('labels-container');
         const svgPath = document.getElementById('tour-path');
 
         // --- LOGIC FUNCTIONS ---
@@ -546,37 +563,39 @@
 
         // --- RENDER FUNCTION ---
         function renderTourNodes() {
-            // 1. Clear the container before re-rendering
+            // 1. Clear the containers before re-rendering
             appContainer.innerHTML = ''; 
+            labelsContainer.innerHTML = '';
             
             // 2. Calculate dynamic scale factor based on current window height
-            // We use a slightly aggressive scale factor to force a wider spread
             const rawScale = window.innerHeight / BASE_HEIGHT_PX;
-            const scaleFactor = Math.max(0.8, rawScale * 1.2); // Start higher and scale 20% faster
+            const scaleFactor = Math.max(0.8, rawScale * 1.2); 
             
             // 3. Apply scale factor to base constants
             const spread = BASE_SPREAD * scaleFactor; 
             const minRadius = BASE_MIN_RADIUS * scaleFactor; 
 
             cityPositions.forEach((city, index) => {
-                // A. Create City Container
+                // A. Create City Container (for graphics)
                 const node = document.createElement('div');
                 node.className = 'city-node';
                 node.style.left = `${city.x}%`;
                 node.style.top = `${city.y}%`;
                 
-                // B. Add Label (Name + Date)
+                // B. Add Label (Name + Date) -> APPEND TO LABELS CONTAINER
                 const label = document.createElement('div');
-                label.className = 'city-label-group';
+                label.className = 'city-label-wrapper';
+                // Replicate positioning of the node
+                label.style.left = `${city.x}%`;
+                label.style.top = `${city.y}%`;
+                
                 label.innerHTML = `
                     <div class="city-date">${city.dates}</div>
                     <div class="city-name">${city.city}</div>
                 `;
-                
+                labelsContainer.appendChild(label);
 
-                node.appendChild(label);
-
-                // C. Create Spiral Container
+                // C. Create Spiral Container (inside the node in appContainer)
                 const spiral = document.createElement('div');
                 spiral.className = 'spiral-container';
                 
