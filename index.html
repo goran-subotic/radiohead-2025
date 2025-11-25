@@ -152,7 +152,7 @@
             z-index: 2000; /* UPDATED: High z-index to ensure text stays on top */
             pointer-events: auto;
             display: inline-block;
-            cursor: pointer;
+            /* cursor removed as interaction was removed */
         }
 
         .city-name {
@@ -306,50 +306,6 @@
             line-height: 1.4;
         }
 
-        /* --- ARCHIVAL CONSOLE --- */
-        #analysis-panel {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 350px;
-            max-height: 250px;
-            background: var(--rh-code-bg);
-            border: 1px solid var(--rh-acid);
-            padding: 15px;
-            z-index: 1500; /* Below labels but accessible */
-            overflow-y: auto;
-            font-size: 0.9rem;
-            line-height: 1.5;
-            box-shadow: 0 0 15px var(--rh-acid);
-            display: none;
-        }
-        #analysis-panel h3 {
-            font-size: 1.1rem;
-            color: var(--rh-acid);
-            margin: 0 0 10px 0;
-            text-transform: uppercase;
-        }
-        #analysis-panel p {
-            margin: 0 0 10px 0;
-        }
-        .loading-text {
-            color: #ffaa00;
-        }
-        .citation-link {
-            font-size: 0.75rem;
-            color: var(--rh-dim);
-            text-decoration: none;
-            display: block;
-            margin-top: 5px;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-        }
-        .citation-link:hover {
-            color: var(--rh-acid);
-        }
-
-
         /* Responsive */
         @media (max-width: 768px) {
             .city-name { font-size: 1.5rem; }
@@ -360,13 +316,6 @@
                 max-width: none; 
             }
             
-            #analysis-panel {
-                width: 90vw;
-                right: 5vw;
-                left: 5vw;
-                max-height: 200px;
-            }
-
             #tour-year-display {
                 font-size: 25vw;
                 letter-spacing: 2vw;
@@ -393,14 +342,6 @@
         [SYSTEM_STATUS: ONLINE]<br>
         ARCHIVE_SIZE: (Curated Videos Only)<br>
         MODE: SPIRAL_DISTRIBUTION
-    </div>
-
-    <!-- New Archival Analysis Console -->
-    <div id="analysis-panel">
-        <h3>ARCHIVAL CONSOLE ✨</h3>
-        <div id="analysis-content">
-            Select a city label (e.g., 'Madrid') for historical concert context.
-        </div>
     </div>
 
     <div id="video-overlay">
@@ -541,105 +482,9 @@
             'https://rsrc.wasteheadquarters.com/YjVhNzI1NDVkNmQ4NjUyNWRjYTE3NjI2/11_Bologna__RADIOHEAD_PHOTO_BY_ALEX_LAKE_TWOSHORTDAYS_9H0A1884.jpg'
         ];
 
-        // --- LLM API INTEGRATION ---
-        const apiKey = ""; 
-        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
-        const analysisPanel = document.getElementById('analysis-panel');
-        const analysisContent = document.getElementById('analysis-content');
         const appContainer = document.getElementById('app-container');
         const svgPath = document.getElementById('tour-path');
 
-
-        /**
-         * Robust fetch with exponential backoff for API calls.
-         */
-        async function backoffFetch(url, options, retries = 3) {
-            for (let i = 0; i < retries; i++) {
-                try {
-                    const response = await fetch(url, options);
-                    if (response.status === 429 && i < retries - 1) {
-                        // Too Many Requests, wait and retry
-                        const delay = Math.pow(2, i) * 1000 + Math.random() * 1000;
-                        await new Promise(resolve => setTimeout(resolve, delay));
-                        continue;
-                    }
-                    if (!response.ok) {
-                         throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    return response;
-                } catch (error) {
-                    if (i === retries - 1) {
-                        throw error;
-                    }
-                }
-            }
-        }
-        
-        /**
-         * Generates an archival note for a city using Gemini and Google Search grounding.
-         * @param {string} city - The city name to search for.
-         */
-        async function generateArchivalNote(city) {
-            analysisPanel.style.display = 'block';
-            analysisContent.innerHTML = `<p class="loading-text">[SYSTEM_COMM] Fetching archival context for ${city}... Please wait.</p>`;
-
-            const userQuery = `Find historical information about Radiohead playing live in ${city}, including notable setlist differences or unique performances. Summarize the findings in a single, short paragraph.`;
-            
-            const systemPrompt = "Act as a specialized music archivist and historian for the band Radiohead. Provide a concise, highly engaging, single-paragraph analysis focusing on the band's history and potential significance of the upcoming show in the specified location. Use a tone that is technical and reverent, reflecting the band's aesthetic. Do not use quotes. Use only facts from the search results.";
-
-            const payload = {
-                contents: [{ parts: [{ text: userQuery }] }],
-                tools: [{ "google_search": {} }],
-                systemInstruction: {
-                    parts: [{ text: systemPrompt }]
-                },
-            };
-
-            try {
-                const response = await backoffFetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                const result = await response.json();
-                const candidate = result.candidates?.[0];
-
-                if (candidate && candidate.content?.parts?.[0]?.text) {
-                    const text = candidate.content.parts[0].text;
-                    let sourcesHtml = '';
-                    
-                    const groundingMetadata = candidate.groundingMetadata;
-                    if (groundingMetadata && groundingMetadata.groundingAttributions) {
-                        const sources = groundingMetadata.groundingAttributions
-                            .map(attribution => ({
-                                uri: attribution.web?.uri,
-                                title: attribution.web?.title,
-                            }))
-                            .filter(source => source.uri && source.title)
-                            .slice(0, 3); // Limit to top 3 sources for display
-
-                        if (sources.length > 0) {
-                            sourcesHtml = '<h4>[DATA SOURCES]</h4>';
-                            sources.forEach((source, index) => {
-                                sourcesHtml += `<a href="${source.uri}" target="_blank" class="citation-link" title="${source.title}">[SRC ${index + 1}] ${source.title}</a>`;
-                            });
-                        }
-                    }
-
-                    analysisContent.innerHTML = `
-                        <p>${text}</p>
-                        ${sourcesHtml}
-                    `;
-                } else {
-                    analysisContent.innerHTML = `<p class="loading-text">[SYSTEM_ERROR] Analysis failed. No content generated for ${city}.</p>`;
-                }
-            } catch (error) {
-                console.error("Gemini API Error:", error);
-                analysisContent.innerHTML = `<p class="loading-text">[SYSTEM_ERROR] Connection failure or API fault. Unable to retrieve archival data.</p>`;
-            }
-        }
-        
         // --- LOGIC FUNCTIONS ---
 
         /**
@@ -727,7 +572,7 @@
                     <div class="city-date">${city.dates}</div>
                     <div class="city-name">${city.city}</div>
                 `;
-                label.onclick = () => generateArchivalNote(city.city);
+                
 
                 node.appendChild(label);
 
