@@ -401,6 +401,94 @@
             min-width: 80px;
         }
 
+        #chat-toggle-btn {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.8rem;
+            background: var(--rh-acid);
+            color: var(--rh-black);
+            border: 1px solid var(--rh-acid);
+            padding: 8px 15px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.2s;
+            font-weight: bold;
+        }
+
+        #chat-toggle-btn:hover {
+            background: var(--rh-white);
+            border-color: var(--rh-white);
+        }
+
+        #chat-toggle-btn.active {
+            background: var(--rh-red);
+            border-color: var(--rh-red);
+            color: var(--rh-white);
+        }
+
+        /* --- CHAT PANEL --- */
+        #chat-panel {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 340px;
+            height: 100vh;
+            background: rgba(5, 5, 5, 0.95);
+            border-right: 1px solid var(--rh-dim);
+            z-index: 4800;
+            display: flex;
+            flex-direction: column;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+            box-shadow: 5px 0 30px rgba(0, 0, 0, 0.8);
+        }
+
+        #chat-panel.open {
+            transform: translateX(0);
+        }
+
+        #chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid var(--rh-dim);
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        #chat-title {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--rh-acid);
+            letter-spacing: 2px;
+        }
+
+        #chat-close-btn {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1.5rem;
+            background: transparent;
+            color: var(--rh-white);
+            border: none;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0 5px;
+            transition: color 0.2s;
+        }
+
+        #chat-close-btn:hover {
+            color: var(--rh-red);
+        }
+
+        #chat-embed-container {
+            flex: 1;
+            overflow: hidden;
+        }
+
+        #chat-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
         /* --- SEARCH RESULT STATES --- */
         .thumb.search-match {
             border: 2px solid var(--rh-acid) !important;
@@ -517,6 +605,16 @@
                 font-size: 0.65rem;
                 min-width: 60px;
             }
+
+            #chat-toggle-btn {
+                font-size: 0.7rem;
+                padding: 6px 10px;
+            }
+
+            #chat-panel {
+                width: 100%;
+                border-right: none;
+            }
         }
 
         /* Small phones */
@@ -558,6 +656,11 @@
                 order: 3;
                 margin-left: 0;
                 margin-top: 5px;
+            }
+
+            #chat-toggle-btn {
+                flex: 1;
+                order: 2;
             }
 
             #video-container {
@@ -648,6 +751,23 @@
         <button id="search-btn">SEARCH</button>
         <button id="clear-search-btn">CLEAR</button>
         <span id="search-results-count"></span>
+        <button id="chat-toggle-btn">CHAT</button>
+    </div>
+
+    <!-- Chat Panel -->
+    <div id="chat-panel">
+        <div id="chat-header">
+            <span id="chat-title">LIVE CHAT</span>
+            <button id="chat-close-btn">×</button>
+        </div>
+        <div id="chat-embed-container">
+            <!-- Replace YOUR_ROOM_NAME with your Minnit room name -->
+            <iframe
+                src="https://organizations.minnit.chat/460965390955371/Main?embed&darkmode"
+                id="chat-iframe"
+                allow="clipboard-read; clipboard-write">
+            </iframe>
+        </div>
     </div>
 
     <div class="glitch-footer">
@@ -1279,6 +1399,29 @@
                 }
                 if (e.key === 'Escape') {
                     clearSearch();
+                }
+            });
+
+            // Chat panel toggle
+            const chatToggleBtn = document.getElementById('chat-toggle-btn');
+            const chatPanel = document.getElementById('chat-panel');
+            const chatCloseBtn = document.getElementById('chat-close-btn');
+
+            chatToggleBtn.addEventListener('click', () => {
+                chatPanel.classList.toggle('open');
+                chatToggleBtn.classList.toggle('active');
+            });
+
+            chatCloseBtn.addEventListener('click', () => {
+                chatPanel.classList.remove('open');
+                chatToggleBtn.classList.remove('active');
+            });
+
+            // Close chat with Escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && chatPanel.classList.contains('open')) {
+                    chatPanel.classList.remove('open');
+                    chatToggleBtn.classList.remove('active');
                 }
             });
         }
