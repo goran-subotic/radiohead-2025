@@ -407,11 +407,13 @@
             box-shadow: 0 0 15px rgba(204, 255, 0, 0.5);
             opacity: 1 !important;
             filter: none !important;
+            z-index: 1000 !important; /* Bring matched thumbnails to front */
         }
 
         .thumb.search-dimmed {
             filter: grayscale(100%) brightness(0.4);
             opacity: 0.25;
+            pointer-events: none; /* Allow clicks to pass through to matched thumbs behind */
         }
 
         /* --- CITY FILTER STATES --- */
