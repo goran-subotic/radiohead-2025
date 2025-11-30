@@ -1213,8 +1213,8 @@
             // Clear city filter when searching
             if (selectedCityIndex !== null) {
                 selectedCityIndex = null;
-                document.querySelectorAll('.city-node').forEach(node => {
-                    node.classList.remove('dimmed', 'selected');
+                allThumbs.forEach(thumb => {
+                    thumb.classList.remove('city-dimmed', 'city-selected');
                 });
                 document.querySelectorAll('.city-label-wrapper').forEach(label => {
                     label.classList.remove('dimmed', 'selected');
