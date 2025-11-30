@@ -183,7 +183,14 @@
             position: absolute;
             transform: translate(-50%, -50%);
             text-align: center;
-            pointer-events: none; 
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Raise city node above others when it contains hovered thumb */
+        .city-node:has(.thumb:hover),
+        .city-node:has(.thumb:focus) {
+            z-index: 1000;
         }
 
         /* --- CITY LABELS (Text) --- */
