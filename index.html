@@ -188,10 +188,6 @@
             z-index: 80; /* Above non-hovered thumbs, below hovered thumbs */
         }
 
-        .city-label-wrapper:hover {
-            z-index: 200; /* Above hovered thumbs */
-        }
-
         .city-name {
             font-family: 'Xanh Mono', monospace;
             font-size: 2.5rem;
@@ -1545,12 +1541,23 @@
                 }
             });
 
-            // Keep hovered thumbs on top (z-index only, cumulative)
+            // Keep hovered elements on top (z-index only, cumulative)
             let topZIndex = 100;
+
+            // For thumbs
             appContainer.addEventListener('mouseenter', (e) => {
                 if (e.target.classList.contains('thumb')) {
                     topZIndex++;
                     e.target.style.zIndex = topZIndex;
+                }
+            }, true);
+
+            // For city labels
+            labelsContainer.addEventListener('mouseenter', (e) => {
+                const label = e.target.closest('.city-label-wrapper');
+                if (label) {
+                    topZIndex++;
+                    label.style.zIndex = topZIndex;
                 }
             }, true);
         }
