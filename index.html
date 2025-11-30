@@ -48,6 +48,9 @@
             font-family: 'Share Tech Mono', monospace;
             color: var(--rh-white);
             cursor: crosshair;
+            position: fixed;
+            top: 0;
+            left: 0;
         }
 
         /* --- BACKGROUND --- */
@@ -139,6 +142,7 @@
             height: 100%;
             z-index: 50; /* Base graphic layer */
             pointer-events: none; /* Let clicks pass to background/shards */
+            overflow: hidden; /* Prevent spiral overflow from causing scroll */
         }
 
         /* Container specifically for text labels to guarantee they sit on top */
@@ -266,14 +270,18 @@
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            right: 0;
+            bottom: 0;
+            width: 100vw;
+            height: 100vh;
             background: rgba(0,0,0,0.95);
             z-index: 5000; /* Absolute Top */
             justify-content: center;
             align-items: center;
             flex-direction: column;
             backdrop-filter: blur(8px);
+            overflow: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         #video-container {
@@ -458,8 +466,18 @@
             .thumb:hover { width: 360px; height: 203px; }
 
             #video-container {
-                width: min(95vw, 142.22vh);
+                width: 95vw;
                 max-width: none;
+                max-height: 70vh;
+            }
+
+            #video-overlay {
+                padding: 20px 0;
+            }
+
+            #close-btn {
+                margin-top: 15px;
+                padding: 12px 30px;
             }
 
             #tour-year-display {
@@ -537,6 +555,15 @@
                 order: 3;
                 margin-left: 0;
                 margin-top: 5px;
+            }
+
+            #video-container {
+                max-height: 60vh;
+            }
+
+            #close-btn {
+                font-size: 1rem;
+                padding: 10px 25px;
             }
         }
 
@@ -1073,13 +1100,27 @@
             document.getElementById('search-input').value = '';
             document.getElementById('search-results-count').textContent = '';
             
-            // 2. Calculate dynamic scale factor based on current window height
+            // 2. Calculate dynamic scale factor based on viewport size
             const rawScale = window.innerHeight / BASE_HEIGHT_PX;
-            const scaleFactor = Math.max(0.8, rawScale * 1.2); 
-            
+            const isMobile = window.innerWidth < 768;
+            const isSmallPhone = window.innerWidth < 400;
+
+            // More aggressive scaling reduction on mobile
+            let scaleFactor;
+            if (isSmallPhone) {
+                scaleFactor = Math.max(0.35, rawScale * 0.5);
+            } else if (isMobile) {
+                scaleFactor = Math.max(0.45, rawScale * 0.7);
+            } else {
+                scaleFactor = Math.max(0.8, rawScale * 1.2);
+            }
+
             // 3. Apply scale factor to base constants
-            const spread = BASE_SPREAD * scaleFactor; 
-            const minRadius = BASE_MIN_RADIUS * scaleFactor; 
+            const spread = BASE_SPREAD * scaleFactor;
+            const minRadius = BASE_MIN_RADIUS * scaleFactor;
+
+            // 4. Calculate max radius to prevent overflow on mobile
+            const maxRadius = isMobile ? Math.min(window.innerWidth, window.innerHeight) * 0.35 : Infinity; 
 
             cityPositions.forEach((city, index) => {
                 // A. Create City Container (for graphics)
@@ -1116,18 +1157,21 @@
                     const thumb = document.createElement('div');
                     thumb.className = 'thumb';
 
-                    // --- RANDOM SIZE CALCULATION ---
-                    const randomFactor = Math.random(); 
-                    const randomWidth = MIN_WIDTH + (MAX_WIDTH - MIN_WIDTH) * randomFactor;
+                    // --- RANDOM SIZE CALCULATION (smaller on mobile) ---
+                    const randomFactor = Math.random();
+                    const mobileWidthScale = isSmallPhone ? 0.5 : (isMobile ? 0.65 : 1);
+                    const baseWidth = MIN_WIDTH + (MAX_WIDTH - MIN_WIDTH) * randomFactor;
+                    const randomWidth = baseWidth * mobileWidthScale;
                     const randomHeight = randomWidth / ASPECT_RATIO;
-                    
+
                     thumb.style.width = `${randomWidth}px`;
                     thumb.style.height = `${randomHeight}px`;
-                    
-                    // Spiral Math using scaled values
+
+                    // Spiral Math using scaled values with max radius constraint
                     const angle = vIndex * goldenAngle * (Math.PI / 180);
-                    const radius = minRadius + (spread * Math.sqrt(vIndex)); 
-                    
+                    const rawRadius = minRadius + (spread * Math.sqrt(vIndex));
+                    const radius = Math.min(rawRadius, maxRadius);
+
                     const tx = Math.cos(angle) * radius;
                     const ty = Math.sin(angle) * radius;
 
@@ -1189,6 +1233,9 @@
         const playerContainer = document.getElementById('player-placeholder');
         
         function openOverlay(videoId) {
+            // Reset any scroll position on mobile
+            window.scrollTo(0, 0);
+            overlay.scrollTo(0, 0);
             overlay.style.display = 'flex';
             playerContainer.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&theme=dark&color=white" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
         }
