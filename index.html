@@ -178,21 +178,6 @@
             pointer-events: none;
         }
 
-        /* --- CITY NODES (Graphics) --- */
-        .city-node {
-            position: absolute;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        /* Raise city node above others when it contains hovered thumb */
-        .city-node:has(.thumb:hover),
-        .city-node:has(.thumb:focus) {
-            z-index: 1000;
-        }
-
         /* --- CITY LABELS (Text) --- */
         /* Wraps the name/date inside the high-z labels-container */
         .city-label-wrapper {
@@ -239,17 +224,7 @@
             letter-spacing: 1px;
         }
 
-        /* --- THUMBNAIL SPIRAL --- */
-        .spiral-container {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            pointer-events: none;
-            z-index: 100;
-        }
-
+        /* --- THUMBNAILS --- */
         .thumb {
             position: absolute;
             background-color: #222;
@@ -579,18 +554,10 @@
 
         /* --- CITY FILTER STATES --- */
         /* Dimmed state for non-selected cities */
-        .city-node.dimmed .thumb {
+        .thumb.city-dimmed {
             filter: grayscale(100%) brightness(0.5);
             opacity: 0.3;
             pointer-events: none;
-        }
-
-        .city-node.dimmed .thumb:hover {
-            width: inherit;
-            height: inherit;
-            z-index: auto;
-            border: 1px solid #444;
-            box-shadow: none;
         }
 
         .city-label-wrapper.dimmed .city-name {
@@ -608,7 +575,7 @@
             box-shadow: 0 0 15px rgba(204, 255, 0, 0.4), inset 0 0 10px rgba(204, 255, 0, 0.1);
         }
 
-        .city-node.selected .thumb {
+        .thumb.city-selected {
             opacity: 1;
         }
 
@@ -1181,14 +1148,14 @@
         let selectedCityIndex = null;
 
         function toggleCitySelection(index) {
-            const cityNodes = document.querySelectorAll('.city-node');
+            const allThumbs = document.querySelectorAll('.thumb');
             const cityLabels = document.querySelectorAll('.city-label-wrapper');
 
             // If clicking the same city, deselect
             if (selectedCityIndex === index) {
                 selectedCityIndex = null;
-                cityNodes.forEach(node => {
-                    node.classList.remove('dimmed', 'selected');
+                allThumbs.forEach(thumb => {
+                    thumb.classList.remove('city-dimmed', 'city-selected');
                 });
                 cityLabels.forEach(label => {
                     label.classList.remove('dimmed', 'selected');
@@ -1199,13 +1166,14 @@
             // Select new city
             selectedCityIndex = index;
 
-            cityNodes.forEach((node, i) => {
-                if (i === index) {
-                    node.classList.remove('dimmed');
-                    node.classList.add('selected');
+            allThumbs.forEach(thumb => {
+                const thumbCityIndex = parseInt(thumb.getAttribute('data-city-index'));
+                if (thumbCityIndex === index) {
+                    thumb.classList.remove('city-dimmed');
+                    thumb.classList.add('city-selected');
                 } else {
-                    node.classList.remove('selected');
-                    node.classList.add('dimmed');
+                    thumb.classList.remove('city-selected');
+                    thumb.classList.add('city-dimmed');
                 }
             });
 
@@ -1367,20 +1335,21 @@
             // 4. Calculate max radius to prevent overflow on mobile
             const maxRadius = isMobile ? Math.min(window.innerWidth, window.innerHeight) * 0.35 : Infinity; 
 
+            // Get viewport dimensions for absolute positioning
+            const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight;
+
             cityPositions.forEach((city, index) => {
-                // A. Create City Container (for graphics)
-                const node = document.createElement('div');
-                node.className = 'city-node';
-                node.style.left = `${city.x}%`;
-                node.style.top = `${city.y}%`;
-                
-                // B. Add Label (Name + Date) -> APPEND TO LABELS CONTAINER
+                // Calculate city center in pixels
+                const cityCenterX = (city.x / 100) * viewportWidth;
+                const cityCenterY = (city.y / 100) * viewportHeight;
+
+                // A. Add Label (Name + Date) -> APPEND TO LABELS CONTAINER
                 const label = document.createElement('div');
                 label.className = 'city-label-wrapper';
-                // Replicate positioning of the node
                 label.style.left = `${city.x}%`;
                 label.style.top = `${city.y}%`;
-                
+
                 label.innerHTML = `
                     <div class="city-date">${city.dates}</div>
                     <div class="city-name">${city.city}</div>
@@ -1391,16 +1360,15 @@
 
                 labelsContainer.appendChild(label);
 
-                // C. Create Spiral Container (inside the node in appContainer)
-                const spiral = document.createElement('div');
-                spiral.className = 'spiral-container';
-                
-                // D. GENERATE SPIRAL
-                const goldenAngle = 137.508; 
-                
+                // B. GENERATE SPIRAL - thumbs go directly into appContainer
+                const goldenAngle = 137.508;
+
                 city.videos.forEach((video, vIndex) => {
                     const thumb = document.createElement('div');
                     thumb.className = 'thumb';
+
+                    // Track which city this thumb belongs to (for filtering)
+                    thumb.setAttribute('data-city-index', index);
 
                     // --- ACCESSIBILITY ---
                     thumb.setAttribute('role', 'button');
@@ -1417,15 +1385,21 @@
                     thumb.style.width = `${randomWidth}px`;
                     thumb.style.height = `${randomHeight}px`;
 
-                    // Spiral Math using scaled values with max radius constraint
+                    // Spiral Math - calculate absolute position
                     const angle = vIndex * goldenAngle * (Math.PI / 180);
                     const rawRadius = minRadius + (spread * Math.sqrt(vIndex));
                     const radius = Math.min(rawRadius, maxRadius);
 
-                    const tx = Math.cos(angle) * radius;
-                    const ty = Math.sin(angle) * radius;
+                    const offsetX = Math.cos(angle) * radius;
+                    const offsetY = Math.sin(angle) * radius;
 
-                    thumb.style.transform = `translate(${tx}px, ${ty}px) rotate(${randomInt(-5, 5)}deg)`;
+                    // Position absolutely from city center
+                    const thumbX = cityCenterX + offsetX;
+                    const thumbY = cityCenterY + offsetY;
+
+                    thumb.style.left = `${thumbX}px`;
+                    thumb.style.top = `${thumbY}px`;
+                    thumb.style.transform = `translate(-50%, -50%) rotate(${randomInt(-5, 5)}deg)`;
 
                     // Data
                     thumb.setAttribute('data-title', video.title);
@@ -1452,11 +1426,8 @@
                         thumb.addEventListener('touchend', handleTouchEnd, { passive: true });
                     }
 
-                    spiral.appendChild(thumb);
+                    appContainer.appendChild(thumb);
                 });
-
-                node.appendChild(spiral);
-                appContainer.appendChild(node);
             });
 
             // Ensure connectors are drawn after nodes are in the DOM
@@ -1568,6 +1539,15 @@
                     chatToggleBtn.classList.remove('active');
                 }
             });
+
+            // Keep hovered thumbs on top (z-index only, cumulative)
+            let topZIndex = 100;
+            appContainer.addEventListener('mouseenter', (e) => {
+                if (e.target.classList.contains('thumb')) {
+                    topZIndex++;
+                    e.target.style.zIndex = topZIndex;
+                }
+            }, true);
         }
 
         initializeMap();
