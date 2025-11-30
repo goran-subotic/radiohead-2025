@@ -1470,18 +1470,77 @@
         // --- OVERLAY LOGIC ---
         const overlay = document.getElementById('video-overlay');
         const playerContainer = document.getElementById('player-placeholder');
-        
+        let ytPlayer = null;
+        let currentVideoId = null;
+
+        // Collect all video IDs from tour data
+        function getAllVideoIds() {
+            const ids = [];
+            tourData.forEach(city => {
+                city.videos.forEach(video => {
+                    ids.push(video.id);
+                });
+            });
+            return ids;
+        }
+
+        // Get random video ID (excluding current)
+        function getRandomVideoId(excludeId) {
+            const allIds = getAllVideoIds();
+            const filtered = allIds.filter(id => id !== excludeId);
+            return filtered[Math.floor(Math.random() * filtered.length)];
+        }
+
+        // YouTube API callback
+        function onYouTubeIframeAPIReady() {
+            // API is ready, player will be created when opening overlay
+        }
+
+        // Handle player state changes
+        function onPlayerStateChange(event) {
+            // State 0 = ended
+            if (event.data === YT.PlayerState.ENDED) {
+                const nextVideoId = getRandomVideoId(currentVideoId);
+                currentVideoId = nextVideoId;
+                ytPlayer.loadVideoById(nextVideoId);
+            }
+        }
+
         function openOverlay(videoId) {
             // Reset any scroll position on mobile
             window.scrollTo(0, 0);
             overlay.scrollTo(0, 0);
             overlay.style.display = 'flex';
-            playerContainer.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&theme=dark&color=white" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+            currentVideoId = videoId;
+
+            // Destroy existing player if any
+            if (ytPlayer) {
+                ytPlayer.destroy();
+                ytPlayer = null;
+            }
+
+            // Create new player with YouTube API
+            ytPlayer = new YT.Player('player-placeholder', {
+                videoId: videoId,
+                playerVars: {
+                    autoplay: 1,
+                    theme: 'dark',
+                    color: 'white',
+                    rel: 0
+                },
+                events: {
+                    onStateChange: onPlayerStateChange
+                }
+            });
         }
 
         document.getElementById('close-btn').onclick = () => {
             overlay.style.display = 'none';
-            playerContainer.innerHTML = '';
+            if (ytPlayer) {
+                ytPlayer.destroy();
+                ytPlayer = null;
+            }
+            currentVideoId = null;
         };
 
         // --- INIT ---
@@ -1565,6 +1624,9 @@
         initializeMap();
 
     </script>
+
+    <!-- YouTube IFrame API -->
+    <script src="https://www.youtube.com/iframe_api"></script>
 
     <!-- Data Hypo Tracking Code -->
 <script>
