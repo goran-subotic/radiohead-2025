@@ -1307,11 +1307,12 @@
             appContainer.innerHTML = '';
             labelsContainer.innerHTML = '';
 
-            // Reset city selection and search state on re-render
+            // Preserve search state during re-render
+            const preservedSearchTerm = currentSearchTerm;
+            const preservedCityIndex = selectedCityIndex;
+
+            // Reset selection state (will be restored after render)
             selectedCityIndex = null;
-            currentSearchTerm = '';
-            document.getElementById('search-input').value = '';
-            document.getElementById('search-results-count').textContent = '';
             
             // 2. Calculate dynamic scale factor based on viewport size
             const rawScale = window.innerHeight / BASE_HEIGHT_PX;
@@ -1426,9 +1427,17 @@
                 node.appendChild(spiral);
                 appContainer.appendChild(node);
             });
-            
+
             // Ensure connectors are drawn after nodes are in the DOM
             drawLines();
+
+            // Restore search/filter state after re-render
+            if (preservedSearchTerm) {
+                currentSearchTerm = preservedSearchTerm;
+                performSearch(preservedSearchTerm);
+            } else if (preservedCityIndex !== null) {
+                toggleCitySelection(preservedCityIndex);
+            }
         }
 
 
