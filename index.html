@@ -319,6 +319,92 @@
             line-height: 1.4;
         }
 
+        /* --- SEARCH BAR --- */
+        #search-bar {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 4500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 0, 0, 0.85);
+            padding: 10px 15px;
+            border: 1px solid var(--rh-dim);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+        }
+
+        #search-input {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.9rem;
+            background: var(--rh-black);
+            color: var(--rh-white);
+            border: 1px solid var(--rh-dim);
+            padding: 8px 12px;
+            width: 200px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        #search-input:focus {
+            border-color: var(--rh-acid);
+        }
+
+        #search-input::placeholder {
+            color: #555;
+        }
+
+        #search-btn, #clear-search-btn {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.8rem;
+            background: transparent;
+            color: var(--rh-white);
+            border: 1px solid var(--rh-dim);
+            padding: 8px 15px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.2s;
+        }
+
+        #search-btn:hover {
+            background: var(--rh-acid);
+            color: var(--rh-black);
+            border-color: var(--rh-acid);
+        }
+
+        #clear-search-btn {
+            color: #666;
+            border-color: #444;
+        }
+
+        #clear-search-btn:hover {
+            background: var(--rh-white);
+            color: var(--rh-black);
+            border-color: var(--rh-white);
+        }
+
+        #search-results-count {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--rh-acid);
+            margin-left: 5px;
+            min-width: 80px;
+        }
+
+        /* --- SEARCH RESULT STATES --- */
+        .thumb.search-match {
+            border: 2px solid var(--rh-acid) !important;
+            box-shadow: 0 0 15px rgba(204, 255, 0, 0.5);
+            opacity: 1 !important;
+            filter: none !important;
+        }
+
+        .thumb.search-dimmed {
+            filter: grayscale(100%) brightness(0.4);
+            opacity: 0.25;
+        }
+
         /* --- CITY FILTER STATES --- */
         /* Dimmed state for non-selected cities */
         .city-node.dimmed .thumb {
@@ -388,6 +474,28 @@
                 bottom: 10px;
                 left: 10px;
             }
+
+            #search-bar {
+                top: 10px;
+                padding: 8px 10px;
+                gap: 5px;
+            }
+
+            #search-input {
+                width: 140px;
+                font-size: 0.8rem;
+                padding: 6px 8px;
+            }
+
+            #search-btn, #clear-search-btn {
+                font-size: 0.7rem;
+                padding: 6px 10px;
+            }
+
+            #search-results-count {
+                font-size: 0.65rem;
+                min-width: 60px;
+            }
         }
 
         /* Small phones */
@@ -403,6 +511,32 @@
 
             .glitch-footer {
                 display: none;
+            }
+
+            #search-bar {
+                width: calc(100% - 20px);
+                left: 10px;
+                transform: none;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            #search-input {
+                width: 100%;
+                order: 1;
+            }
+
+            #search-btn, #clear-search-btn {
+                flex: 1;
+                order: 2;
+            }
+
+            #search-results-count {
+                width: 100%;
+                text-align: center;
+                order: 3;
+                margin-left: 0;
+                margin-top: 5px;
             }
         }
 
@@ -477,6 +611,14 @@
     
     <!-- NEW: Container for Text Labels (Always on top) -->
     <div id="labels-container"></div>
+
+    <!-- Search Bar -->
+    <div id="search-bar">
+        <input type="text" id="search-input" placeholder="SEARCH VIDEOS..." autocomplete="off">
+        <button id="search-btn">SEARCH</button>
+        <button id="clear-search-btn">CLEAR</button>
+        <span id="search-results-count"></span>
+    </div>
 
     <div class="glitch-footer">
         [SYSTEM_STATUS: ONLINE]<br>
@@ -805,6 +947,70 @@
                     label.classList.add('dimmed');
                 }
             });
+
+            // Clear search when selecting a city
+            clearSearch(false);
+        }
+
+        // --- SEARCH STATE ---
+        let currentSearchTerm = '';
+
+        function performSearch(term) {
+            const searchTerm = term.trim().toLowerCase();
+            const resultsCount = document.getElementById('search-results-count');
+            const allThumbs = document.querySelectorAll('.thumb');
+
+            // If empty search, clear everything
+            if (!searchTerm) {
+                clearSearch();
+                return;
+            }
+
+            // Clear city filter when searching
+            if (selectedCityIndex !== null) {
+                selectedCityIndex = null;
+                document.querySelectorAll('.city-node').forEach(node => {
+                    node.classList.remove('dimmed', 'selected');
+                });
+                document.querySelectorAll('.city-label-wrapper').forEach(label => {
+                    label.classList.remove('dimmed', 'selected');
+                });
+            }
+
+            currentSearchTerm = searchTerm;
+            let matchCount = 0;
+
+            allThumbs.forEach(thumb => {
+                const title = (thumb.getAttribute('data-title') || '').toLowerCase();
+                if (title.includes(searchTerm)) {
+                    thumb.classList.add('search-match');
+                    thumb.classList.remove('search-dimmed');
+                    matchCount++;
+                } else {
+                    thumb.classList.remove('search-match');
+                    thumb.classList.add('search-dimmed');
+                }
+            });
+
+            resultsCount.textContent = `${matchCount} FOUND`;
+        }
+
+        function clearSearch(clearInput = true) {
+            const allThumbs = document.querySelectorAll('.thumb');
+            const resultsCount = document.getElementById('search-results-count');
+            const searchInput = document.getElementById('search-input');
+
+            currentSearchTerm = '';
+
+            allThumbs.forEach(thumb => {
+                thumb.classList.remove('search-match', 'search-dimmed');
+            });
+
+            resultsCount.textContent = '';
+
+            if (clearInput && searchInput) {
+                searchInput.value = '';
+            }
         }
 
         /**
@@ -861,8 +1067,11 @@
             appContainer.innerHTML = '';
             labelsContainer.innerHTML = '';
 
-            // Reset city selection state on re-render
+            // Reset city selection and search state on re-render
             selectedCityIndex = null;
+            currentSearchTerm = '';
+            document.getElementById('search-input').value = '';
+            document.getElementById('search-results-count').textContent = '';
             
             // 2. Calculate dynamic scale factor based on current window height
             const rawScale = window.innerHeight / BASE_HEIGHT_PX;
@@ -999,6 +1208,28 @@
             window.addEventListener('orientationchange', () => {
                 // Small delay to let the browser update dimensions
                 setTimeout(renderTourNodes, 100);
+            });
+
+            // Search bar event listeners
+            const searchInput = document.getElementById('search-input');
+            const searchBtn = document.getElementById('search-btn');
+            const clearBtn = document.getElementById('clear-search-btn');
+
+            searchBtn.addEventListener('click', () => {
+                performSearch(searchInput.value);
+            });
+
+            clearBtn.addEventListener('click', () => {
+                clearSearch();
+            });
+
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    performSearch(searchInput.value);
+                }
+                if (e.key === 'Escape') {
+                    clearSearch();
+                }
             });
         }
 
