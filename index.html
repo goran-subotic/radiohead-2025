@@ -53,6 +53,28 @@
             left: 0;
         }
 
+        /* --- SKIP LINK (Accessibility) --- */
+        .skip-link {
+            position: fixed;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--rh-acid);
+            color: var(--rh-black);
+            padding: 12px 24px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.9rem;
+            text-decoration: none;
+            z-index: 9999;
+            transition: top 0.2s;
+        }
+
+        .skip-link:focus {
+            top: 10px;
+            outline: 2px solid var(--rh-white);
+            outline-offset: 2px;
+        }
+
         /* --- BACKGROUND --- */
         #bg-layer {
             position: absolute;
@@ -234,15 +256,21 @@
             transform-origin: center center; 
         }
 
-        .thumb:hover {
-            width: 495px; 
-            height: 279px; 
+        .thumb:hover,
+        .thumb:focus {
+            width: 495px;
+            height: 279px;
             z-index: 1500 !important; /* Still high, but well below #labels-container (4000) */
             filter: none;
             opacity: 1;
             border: 2px solid var(--rh-acid);
             box-shadow: 0 10px 30px rgba(0,0,0,0.9);
             border-radius: 0;
+            outline: none;
+        }
+
+        .thumb:focus-visible {
+            box-shadow: 0 10px 30px rgba(0,0,0,0.9), 0 0 0 3px var(--rh-acid);
         }
 
         .thumb::after {
@@ -260,6 +288,7 @@
             box-shadow: 2px 2px 0 black;
         }
         .thumb:hover::after,
+        .thumb:focus::after,
         .thumb.touch-active::after {
             display: block;
         }
@@ -730,10 +759,13 @@
 </head>
 <body>
 
+    <!-- Skip link for keyboard users -->
+    <a href="#search-input" class="skip-link">Skip to search</a>
+
     <div id="bg-layer"></div>
     <div id="noise"></div>
-    <div id="tour-year-display">2025</div>
-    <img id="main-title-img" src="https://radiohead.com/b1b.jpg" alt="Radiohead Art">
+    <div id="tour-year-display" aria-hidden="true">2025</div>
+    <img id="main-title-img" src="https://radiohead.com/b1b.jpg" alt="" role="presentation">
 
     <svg id="connections-layer">
         <path id="tour-path" class="connector" d="" />
@@ -755,16 +787,17 @@
     </div>
 
     <!-- Chat Panel -->
-    <div id="chat-panel">
+    <div id="chat-panel" role="complementary" aria-label="Live chat">
         <div id="chat-header">
             <span id="chat-title">LIVE CHAT</span>
-            <button id="chat-close-btn">×</button>
+            <button id="chat-close-btn" aria-label="Close chat">×</button>
         </div>
         <div id="chat-embed-container">
             <!-- Replace YOUR_ROOM_NAME with your Minnit room name -->
             <iframe
                 src="https://organizations.minnit.chat/460965390955371/Main?embed&darkmode"
                 id="chat-iframe"
+                title="Live chat room"
                 allow="clipboard-read; clipboard-write">
             </iframe>
         </div>
@@ -776,11 +809,11 @@
         MODE: SPIRAL_DISTRIBUTION
     </div>
 
-    <div id="video-overlay">
+    <div id="video-overlay" role="dialog" aria-label="Video player" aria-modal="true">
         <div id="video-container">
             <div id="player-placeholder"></div>
         </div>
-        <button id="close-btn">DISCONNECT</button>
+        <button id="close-btn" aria-label="Close video player">DISCONNECT</button>
     </div>
 
     <script>
@@ -1280,6 +1313,11 @@
                     const thumb = document.createElement('div');
                     thumb.className = 'thumb';
 
+                    // --- ACCESSIBILITY ---
+                    thumb.setAttribute('role', 'button');
+                    thumb.setAttribute('tabindex', '0');
+                    thumb.setAttribute('aria-label', `Play video: ${video.title}`);
+
                     // --- RANDOM SIZE CALCULATION (smaller on mobile) ---
                     const randomFactor = Math.random();
                     const mobileWidthScale = isSmallPhone ? 0.5 : (isMobile ? 0.65 : 1);
@@ -1299,15 +1337,24 @@
                     const ty = Math.sin(angle) * radius;
 
                     thumb.style.transform = `translate(${tx}px, ${ty}px) rotate(${randomInt(-5, 5)}deg)`;
-                    
+
                     // Data
                     thumb.setAttribute('data-title', video.title);
                     thumb.style.backgroundImage = `url('https://img.youtube.com/vi/${video.id}/hqdefault.jpg')`;
 
-                    // Interaction
+                    // Interaction - click
                     thumb.onclick = (e) => {
                         e.stopPropagation();
                         openOverlay(video.id);
+                    };
+
+                    // Interaction - keyboard (Enter/Space)
+                    thumb.onkeydown = (e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            openOverlay(video.id);
+                        }
                     };
 
                     // Touch events for showing title on mobile
