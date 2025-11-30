@@ -155,26 +155,26 @@
         }
 
         /* --- LAYOUT CONTAINERS --- */
-        /* Container for graphical elements (spirals, thumbs) */
+        /* Container for graphical elements (thumbs) */
         #app-container {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 50; /* Base graphic layer */
+            /* No z-index - let individual thumbs control stacking */
             pointer-events: none; /* Let clicks pass to background/shards */
             overflow: hidden; /* Prevent spiral overflow from causing scroll */
         }
 
-        /* Container specifically for text labels to guarantee they sit on top */
+        /* Container for text labels */
         #labels-container {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 4000; /* Extremely high, above thumbs (1500) and everything else */
+            z-index: 80; /* Between non-hovered thumbs and hovered thumbs */
             pointer-events: none;
         }
 
@@ -220,7 +220,7 @@
             transform: translateX(-50%);
             white-space: nowrap;
             border: 1px solid var(--rh-acid);
-            z-index: 4001;
+            z-index: 1;
             letter-spacing: 1px;
         }
 
