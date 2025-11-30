@@ -356,6 +356,43 @@
             line-height: 1.4;
         }
 
+        /* --- ONLINE COUNTER --- */
+        #online-counter {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--rh-acid);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 8px 14px;
+            border: 1px solid var(--rh-dim);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: 1px;
+        }
+
+        #online-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--rh-acid);
+            border-radius: 50%;
+            animation: pulse-dot 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; box-shadow: 0 0 5px var(--rh-acid); }
+            50% { opacity: 0.5; box-shadow: 0 0 10px var(--rh-acid); }
+        }
+
+        #online-count {
+            font-weight: bold;
+            min-width: 20px;
+            text-align: right;
+        }
+
         /* --- SEARCH BAR --- */
         #search-bar {
             position: fixed;
@@ -613,6 +650,13 @@
                 left: 10px;
             }
 
+            #online-counter {
+                bottom: 10px;
+                right: 10px;
+                font-size: 0.7rem;
+                padding: 6px 10px;
+            }
+
             #search-bar {
                 top: 10px;
                 padding: 8px 10px;
@@ -659,6 +703,13 @@
 
             .glitch-footer {
                 display: none;
+            }
+
+            #online-counter {
+                bottom: auto;
+                top: 70px;
+                right: 10px;
+                font-size: 0.65rem;
             }
 
             #search-bar {
@@ -807,6 +858,12 @@
         [SYSTEM_STATUS: ONLINE]<br>
         ARCHIVE_SIZE: (Curated Videos Only)<br>
         MODE: SPIRAL_DISTRIBUTION
+    </div>
+
+    <!-- Online Counter -->
+    <div id="online-counter" aria-live="polite">
+        <span id="online-dot"></span>
+        <span id="online-count">-</span> ONLINE
     </div>
 
     <div id="video-overlay" role="dialog" aria-label="Video player" aria-modal="true">
@@ -1487,5 +1544,57 @@
   })();
 </script>
 <!-- End Data Hypo Tracking Code -->
+
+<!-- Ably Realtime for Online Counter -->
+<script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
+<script>
+(function() {
+    // Replace with your Ably API key (get free at ably.com)
+    const ABLY_API_KEY = 'qFaqcA.MFCFEg:U5B_nuSpwaCpk4NsO-8qRAGv2LC8uMY23YsRus8FnyQ';
+
+    const onlineCountEl = document.getElementById('online-count');
+
+    // Check if API key is configured
+    if (ABLY_API_KEY === 'YOUR_ABLY_API_KEY') {
+        onlineCountEl.textContent = '1'; // Show at least 1 (current user)
+        console.log('Ably API key not configured. Get a free key at https://ably.com');
+        return;
+    }
+
+    try {
+        const ably = new Ably.Realtime({
+            key: ABLY_API_KEY,
+            clientId: 'visitor-' + Math.random().toString(36).substr(2, 9)
+        });
+
+        const channel = ably.channels.get('radiohead-2025-presence');
+
+        channel.presence.subscribe('enter', updateCount);
+        channel.presence.subscribe('leave', updateCount);
+
+        channel.presence.enter();
+
+        function updateCount() {
+            channel.presence.get((err, members) => {
+                if (!err && members) {
+                    onlineCountEl.textContent = members.length;
+                }
+            });
+        }
+
+        // Initial count
+        updateCount();
+
+        // Cleanup on page leave
+        window.addEventListener('beforeunload', () => {
+            channel.presence.leave();
+        });
+
+    } catch (e) {
+        onlineCountEl.textContent = '1';
+        console.error('Ably connection error:', e);
+    }
+})();
+</script>
 </body>
 </html>
