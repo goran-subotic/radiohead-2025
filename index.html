@@ -82,12 +82,12 @@
             top: 20px;
             left: 50%;
             transform: translateX(-50%);
-            font-family: 'Xanh Mono', monospace; 
-            font-size: 18vw;
+            font-family: 'Xanh Mono', monospace;
+            font-size: clamp(80px, 18vw, 350px);
             font-weight: 400;
             color: var(--rh-acid);
             opacity: 0.15;
-            z-index: 2; 
+            z-index: 2;
             pointer-events: none;
             letter-spacing: 2vw;
             text-shadow: 0 0 20px rgba(204, 255, 0, 0.2);
@@ -255,7 +255,8 @@
             font-weight: bold;
             box-shadow: 2px 2px 0 black;
         }
-        .thumb:hover::after {
+        .thumb:hover::after,
+        .thumb.touch-active::after {
             display: block;
         }
 
@@ -321,17 +322,93 @@
         /* Responsive */
         @media (max-width: 768px) {
             .city-name { font-size: 1.5rem; }
-            .thumb:hover { width: 360px; height: 203px; } 
-            
+            .thumb:hover { width: 360px; height: 203px; }
+
             #video-container {
-                width: min(95vw, 142.22vh); 
-                max-width: none; 
+                width: min(95vw, 142.22vh);
+                max-width: none;
             }
-            
+
             #tour-year-display {
-                font-size: 25vw;
+                font-size: clamp(60px, 25vw, 200px);
                 letter-spacing: 2vw;
                 top: 50px;
+            }
+
+            .glitch-footer {
+                font-size: 9px;
+                max-width: 200px;
+                bottom: 10px;
+                left: 10px;
+            }
+        }
+
+        /* Small phones */
+        @media (max-width: 400px) {
+            .city-name { font-size: 1.1rem; padding: 3px 8px; }
+            .city-date { font-size: 0.75rem; top: -14px; }
+            .thumb:hover { width: 280px; height: 158px; }
+
+            #tour-year-display {
+                font-size: clamp(50px, 22vw, 120px);
+                top: 30px;
+            }
+
+            .glitch-footer {
+                display: none;
+            }
+        }
+
+        /* Touch device active states (mirror hover) */
+        @media (hover: none) and (pointer: coarse) {
+            .thumb:active {
+                width: 320px;
+                height: 180px;
+                z-index: 1500 !important;
+                filter: none;
+                opacity: 1;
+                border: 2px solid var(--rh-acid);
+                box-shadow: 0 10px 30px rgba(0,0,0,0.9);
+            }
+
+            .thumb:active::after {
+                display: block;
+            }
+
+            .city-name:active {
+                background: var(--rh-white);
+                color: var(--rh-black);
+                border-color: var(--rh-white);
+            }
+        }
+
+        /* Reduced motion preference */
+        @media (prefers-reduced-motion: reduce) {
+            .thumb {
+                transition: none;
+            }
+            .city-name {
+                transition: none;
+            }
+            #close-btn {
+                transition: none;
+            }
+        }
+
+        /* Fallback for browsers without aspect-ratio support */
+        @supports not (aspect-ratio: 16/9) {
+            #video-container {
+                height: 0;
+                padding-bottom: 56.25%; /* 16:9 ratio */
+                position: relative;
+            }
+            #video-container iframe,
+            #video-container #player-placeholder {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
             }
         }
 
@@ -621,6 +698,24 @@
         }
 
         function randomInt(min, max) { return Math.floor(Math.random() * (max - min + 1) + min); }
+
+        // Check if device supports touch
+        const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+
+        // Handle touch-active class for showing titles on mobile
+        function handleTouchStart(e) {
+            // Remove touch-active from all other thumbs
+            document.querySelectorAll('.thumb.touch-active').forEach(el => {
+                if (el !== e.currentTarget) el.classList.remove('touch-active');
+            });
+            e.currentTarget.classList.add('touch-active');
+        }
+
+        function handleTouchEnd(e) {
+            // Keep the class briefly so user can see title
+            const thumb = e.currentTarget;
+            setTimeout(() => thumb.classList.remove('touch-active'), 2000);
+        }
         
         /**
          * Selects a random image from the BACKGROUND_IMAGES array and applies it to the background layer.
@@ -742,6 +837,12 @@
                         openOverlay(video.id);
                     };
 
+                    // Touch events for showing title on mobile
+                    if (isTouchDevice) {
+                        thumb.addEventListener('touchstart', handleTouchStart, { passive: true });
+                        thumb.addEventListener('touchend', handleTouchEnd, { passive: true });
+                    }
+
                     spiral.appendChild(thumb);
                 });
 
@@ -794,9 +895,14 @@
         // --- INIT ---
         function initializeMap() {
             setRandomBackground();
-            renderTourNodes(); 
+            renderTourNodes();
             // Rerun rendering on resize to recalculate spread
             window.addEventListener('resize', renderTourNodes);
+            // Handle orientation changes on mobile devices
+            window.addEventListener('orientationchange', () => {
+                // Small delay to let the browser update dimensions
+                setTimeout(renderTourNodes, 100);
+            });
         }
 
         initializeMap();
