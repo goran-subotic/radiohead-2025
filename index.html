@@ -319,6 +319,53 @@
             line-height: 1.4;
         }
 
+        /* --- CITY FILTER STATES --- */
+        /* Dimmed state for non-selected cities */
+        .city-node.dimmed .thumb {
+            filter: grayscale(100%) brightness(0.5);
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        .city-node.dimmed .thumb:hover {
+            width: inherit;
+            height: inherit;
+            z-index: auto;
+            border: 1px solid #444;
+            box-shadow: none;
+        }
+
+        .city-label-wrapper.dimmed .city-name {
+            opacity: 0.4;
+            border-color: #222;
+        }
+
+        .city-label-wrapper.dimmed .city-date {
+            opacity: 0.3;
+        }
+
+        /* Selected state for active city */
+        .city-label-wrapper.selected .city-name {
+            border-color: var(--rh-acid);
+            box-shadow: 0 0 15px rgba(204, 255, 0, 0.4), inset 0 0 10px rgba(204, 255, 0, 0.1);
+        }
+
+        .city-node.selected .thumb {
+            opacity: 1;
+        }
+
+        /* Clickable cursor for city labels */
+        .city-label-wrapper {
+            cursor: pointer;
+        }
+
+        /* Smooth transitions for filter states */
+        .city-node .thumb,
+        .city-label-wrapper .city-name,
+        .city-label-wrapper .city-date {
+            transition: all 0.3s ease;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .city-name { font-size: 1.5rem; }
@@ -716,7 +763,50 @@
             const thumb = e.currentTarget;
             setTimeout(() => thumb.classList.remove('touch-active'), 2000);
         }
-        
+
+        // --- CITY FILTER STATE ---
+        let selectedCityIndex = null;
+
+        function toggleCitySelection(index) {
+            const cityNodes = document.querySelectorAll('.city-node');
+            const cityLabels = document.querySelectorAll('.city-label-wrapper');
+
+            // If clicking the same city, deselect
+            if (selectedCityIndex === index) {
+                selectedCityIndex = null;
+                cityNodes.forEach(node => {
+                    node.classList.remove('dimmed', 'selected');
+                });
+                cityLabels.forEach(label => {
+                    label.classList.remove('dimmed', 'selected');
+                });
+                return;
+            }
+
+            // Select new city
+            selectedCityIndex = index;
+
+            cityNodes.forEach((node, i) => {
+                if (i === index) {
+                    node.classList.remove('dimmed');
+                    node.classList.add('selected');
+                } else {
+                    node.classList.remove('selected');
+                    node.classList.add('dimmed');
+                }
+            });
+
+            cityLabels.forEach((label, i) => {
+                if (i === index) {
+                    label.classList.remove('dimmed');
+                    label.classList.add('selected');
+                } else {
+                    label.classList.remove('selected');
+                    label.classList.add('dimmed');
+                }
+            });
+        }
+
         /**
          * Selects a random image from the BACKGROUND_IMAGES array and applies it to the background layer.
          */
@@ -768,8 +858,11 @@
         // --- RENDER FUNCTION ---
         function renderTourNodes() {
             // 1. Clear the containers before re-rendering
-            appContainer.innerHTML = ''; 
+            appContainer.innerHTML = '';
             labelsContainer.innerHTML = '';
+
+            // Reset city selection state on re-render
+            selectedCityIndex = null;
             
             // 2. Calculate dynamic scale factor based on current window height
             const rawScale = window.innerHeight / BASE_HEIGHT_PX;
@@ -797,6 +890,10 @@
                     <div class="city-date">${city.dates}</div>
                     <div class="city-name">${city.city}</div>
                 `;
+
+                // Click handler for city filtering
+                label.addEventListener('click', () => toggleCitySelection(index));
+
                 labelsContainer.appendChild(label);
 
                 // C. Create Spiral Container (inside the node in appContainer)
