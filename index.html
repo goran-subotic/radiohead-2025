@@ -1539,43 +1539,24 @@
         let selectedCityIndex = null;
 
         function toggleCitySelection(index) {
-            const allThumbs = document.querySelectorAll('.thumb');
             const cityLabels = document.querySelectorAll('.city-label-wrapper');
             const cityFilterEl = document.getElementById('city-filter');
             const dateFilterEl = document.getElementById('date-filter');
             const clearBtn = document.getElementById('clear-search-btn');
+            const searchInput = document.getElementById('search-input');
 
             // If clicking the same city, deselect
             if (selectedCityIndex === index) {
-                selectedCityIndex = null;
-                allThumbs.forEach(thumb => {
-                    thumb.classList.remove('city-dimmed', 'city-selected');
-                });
-                cityLabels.forEach(label => {
-                    label.classList.remove('dimmed', 'selected');
-                });
-                // Clear dropdown filters
-                cityFilterEl.value = '';
-                dateFilterEl.value = '';
-                populateDateDropdown();
+                clearSearch();
                 clearBtn.classList.remove('visible');
                 return;
             }
 
-            // Select new city
+            // Select new city - update dropdown and let performSearch handle thumb visibility
             selectedCityIndex = index;
+            const cityName = CORE_TOUR_DATA[index].city;
 
-            allThumbs.forEach(thumb => {
-                const thumbCityIndex = parseInt(thumb.getAttribute('data-city-index'));
-                if (thumbCityIndex === index) {
-                    thumb.classList.remove('city-dimmed');
-                    thumb.classList.add('city-selected');
-                } else {
-                    thumb.classList.remove('city-selected');
-                    thumb.classList.add('city-dimmed');
-                }
-            });
-
+            // Update labels
             cityLabels.forEach((label, i) => {
                 if (i === index) {
                     label.classList.remove('dimmed');
@@ -1586,16 +1567,13 @@
                 }
             });
 
-            // Sync dropdown filter with city selection
-            const cityName = CORE_TOUR_DATA[index].city;
+            // Sync dropdown and trigger filtering
             cityFilterEl.value = cityName;
+            dateFilterEl.value = '';
             populateDateDropdown(cityName);
-            clearBtn.classList.add('visible');
-
-            // Clear search input but keep city filter
-            const searchInput = document.getElementById('search-input');
             if (searchInput) searchInput.value = '';
-            document.getElementById('search-results-count').textContent = '';
+            performSearch('');
+            clearBtn.classList.add('visible');
         }
 
         // --- SEARCH STATE ---
@@ -1612,17 +1590,6 @@
             if (!searchTerm && !cityFilter && !dateFilter) {
                 clearSearch();
                 return;
-            }
-
-            // Clear city label filter when using search bar filters
-            if (selectedCityIndex !== null) {
-                selectedCityIndex = null;
-                allThumbs.forEach(thumb => {
-                    thumb.classList.remove('city-dimmed', 'city-selected');
-                });
-                document.querySelectorAll('.city-label-wrapper').forEach(label => {
-                    label.classList.remove('dimmed', 'selected');
-                });
             }
 
             currentSearchTerm = searchTerm;
@@ -2075,35 +2042,19 @@
             // Initialize date dropdown with all dates
             populateDateDropdown();
 
-            // Sync city labels with dropdown selection
+            // Sync city labels with dropdown selection (labels only, performSearch handles thumbs)
             function syncCityLabelsWithDropdown(cityName) {
-                const allThumbs = document.querySelectorAll('.thumb');
                 const cityLabels = document.querySelectorAll('.city-label-wrapper');
 
                 if (!cityName) {
-                    // Clear all city selection
                     selectedCityIndex = null;
-                    allThumbs.forEach(thumb => {
-                        thumb.classList.remove('city-dimmed', 'city-selected');
-                    });
                     cityLabels.forEach(label => {
                         label.classList.remove('dimmed', 'selected');
                     });
                 } else {
-                    // Find city index and select it
                     const cityIndex = CORE_TOUR_DATA.findIndex(c => c.city === cityName);
                     if (cityIndex >= 0) {
                         selectedCityIndex = cityIndex;
-                        allThumbs.forEach(thumb => {
-                            const thumbCityIndex = parseInt(thumb.getAttribute('data-city-index'));
-                            if (thumbCityIndex === cityIndex) {
-                                thumb.classList.remove('city-dimmed');
-                                thumb.classList.add('city-selected');
-                            } else {
-                                thumb.classList.remove('city-selected');
-                                thumb.classList.add('city-dimmed');
-                            }
-                        });
                         cityLabels.forEach((label, i) => {
                             if (i === cityIndex) {
                                 label.classList.remove('dimmed');
