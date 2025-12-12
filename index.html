@@ -392,19 +392,45 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
         }
 
-        #search-input {
+        #search-input, #city-filter, #date-filter {
             font-family: 'Share Tech Mono', monospace;
             font-size: 0.9rem;
             background: var(--rh-black);
             color: var(--rh-white);
             border: 1px solid var(--rh-dim);
             padding: 8px 12px;
-            width: 200px;
             outline: none;
             transition: border-color 0.2s;
         }
 
-        #search-input:focus {
+        #search-input {
+            width: 200px;
+        }
+
+        #city-filter, #date-filter {
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23ccff00' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            padding-right: 28px;
+        }
+
+        #city-filter {
+            width: 130px;
+        }
+
+        #date-filter {
+            width: 140px;
+        }
+
+        #city-filter option, #date-filter option {
+            background: var(--rh-black);
+            color: var(--rh-white);
+        }
+
+        #search-input:focus, #city-filter:focus, #date-filter:focus {
             border-color: var(--rh-acid);
         }
 
@@ -434,6 +460,13 @@
         #clear-search-btn {
             color: #666;
             border-color: #444;
+            display: none;
+        }
+
+        #clear-search-btn.visible {
+            display: inline-block;
+            color: #ff4444;
+            border-color: #ff4444;
         }
 
         #clear-search-btn:hover {
@@ -638,8 +671,18 @@
                 gap: 5px;
             }
 
+            #city-filter, #date-filter {
+                width: 100px;
+                font-size: 0.8rem;
+                padding: 6px 8px;
+            }
+
+            #city-filter {
+                padding-right: 22px;
+            }
+
             #search-input {
-                width: 140px;
+                width: 120px;
                 font-size: 0.8rem;
                 padding: 6px 8px;
             }
@@ -693,11 +736,24 @@
                 transform: none;
                 flex-wrap: wrap;
                 justify-content: center;
+                gap: 5px;
+            }
+
+            #city-filter, #date-filter {
+                width: calc(50% - 3px);
+                order: 0;
+                font-size: 0.75rem;
+                padding: 6px 8px;
+            }
+
+            #city-filter {
+                padding-right: 22px;
             }
 
             #search-input {
                 width: 100%;
                 order: 1;
+                font-size: 0.8rem;
             }
 
             #search-btn, #clear-search-btn {
@@ -1019,7 +1075,18 @@
 
     <!-- Search Bar -->
     <div id="search-bar">
-        <input type="text" id="search-input" placeholder="SEARCH VIDEOS..." autocomplete="off">
+        <select id="city-filter">
+            <option value="">ALL CITIES</option>
+            <option value="Madrid">MADRID</option>
+            <option value="Bologna">BOLOGNA</option>
+            <option value="London">LONDON</option>
+            <option value="Copenhagen">COPENHAGEN</option>
+            <option value="Berlin">BERLIN</option>
+        </select>
+        <select id="date-filter">
+            <option value="">ALL DATES</option>
+        </select>
+        <input type="text" id="search-input" placeholder="TITLE..." autocomplete="off">
         <button id="search-btn">SEARCH</button>
         <button id="clear-search-btn">CLEAR</button>
         <span id="search-results-count"></span>
@@ -1082,341 +1149,341 @@
                 city: "Madrid", 
                 dates: "NOV 04-08",
                 realVideos: [
-                    { id: "cmXDj-WeIqA", title: "RADIOHEAD — Full Show in Madrid 04/11/2025" }, 
-                    { id: "ze8ZAlTyEIU", title: "Radiohead - FULL SHOW - live Madrid 2025-11-04 night 1 European Tour complete concert" }, 
-                    { id: "-37QCDxOcak", title: "Radiohead Live Full Show Movistar Arena Madrid Spain November 5 2025 Night 2" }, 
-                    { id: "fVqSV6seT-U", title: "Radiohead - Madrid 3rd night (FULL SHOW)" }, 
-                    { id: "QzJs81sQ4Kg", title: "All I Need // 2025-11-05 Radiohead, Movistar Arena, Madrid // Strangeloving" }, 
-                    { id: "7vJidz9ngfA", title: "Radiohead - Exit Music (For a Film) | Madrid Night 4" }, 
-                    { id: "DOlcBb60AG0", title: "Idioteque // 2025-11-04 Radiohead, Movistar Arena, Madrid // Strangeloving" }, 
-                    { id: "FqT9RPdN_rU", title: "RADIOHEAD 2025 First song live since 2018! Movistar Arena Madrid 04/11/2025" }, 
-                    { id: "qCu7IAnpCLU", title: "Radiohead 11/5/25 “Planet Telex” at Movistar Arena in Madrid,Spain" }, 
-                    { id: "XlUbeAy6LSE", title: "Radiohead - The Bends - live Madrid 2025-11-08 night 4" }, 
-                    { id: "Hf8X6HDQM3E", title: "Radiohead - How To Disappear Completely | Madrid Movistar Arena | Nov 4, 2025 | Tour Opening Show" }, 
-                    { id: "yhkaC_o-WAo", title: "Radiohead First show of 2025 tour @Movistar Arena, Madrid. First three Encores" }, 
-                    { id: "CNrVXPYqHoE", title: "RADIOHEAD - there there @ MADRID 07/11/2025" },
-                    { id: "6dBywGE_w-c", title: "Radiohead - Everything In Its Right Place (Live in Madrid, 04.11.2025)" },
-                    { id: "X1EA7HAniQo", title: "Radiohead - EXIT MUSIC Live @ Madrid Night 2 | 05.11.2025" },
-                    { id: "XvtOPJUxsk8", title: "Radiohead 11/4/25 “No Surprises” at Movistar Arena in Madrid,Spain" },
-                    { id: "GPGWei_qcVk", title: "RADIOHEAD - weird fishes/arpeggi @ MADRID 07/11/2025" },
-                    { id: "MX7FF0k-ScI", title: "Radiohead - Nude - live from Madrid 2025-11-05 night 2 European Tour" },
-                    { id: "t896-xS5I58", title: "Radiohead Live at Movistar Arena Madrid – Concert Experience (Nov 2025)" },
-                    { id: "6Gj46CRVE8o", title: "Radiohead - Paranoid Android @ Movistar Arena Madrid 4-NOV-2025 (4K)" },
-                    { id: "6BQcG79LeNw", title: "Radiohead - Optimistic - live Madrid 2025-11-08 night 4" },
-                    { id: "tVDK-BPCzpU", title: "RADIOHEAD 1 - Madrid 5 Nov 2025" },
-                    { id: "fr4DBt_ljcI", title: "RADIOHEAD 2 - Madrid 5 Nov 2025" },
-                    { id: "HZhak93sTTo", title: "RADIOHEAD 3 - Madrid 5 Nov 2025" },
-                    { id: "Sv7PRgfEvvI", title: "Radiohead - How to Disappear Completely MULTICAM EDIT (Live in Madrid, 04-11-2025)" },
-                    { id: "ELPBlMHTYyE", title: "Radiohead - Fake Plastic Trees MULTICAM EDIT (Live in Madrid, 04-11-2025)" },
-                    { id: "w4e9GzJi5Oc", title: "Radiohead - The National Anthem MULTICAM EDIT (Live in Madrid, 04-11-2025)" },
-                    { id: "jCPPIt76USE", title: "You and Whose Army? - Radiohead Live - Movistar Arena Madrid, Tour Europeo 2025" },
-                    { id: "YtE7uJ8P3SU", title: "Radiohead - 2+2=5 @ Madrid 2025-11-05" },
-                    { id: "Mo4aEwUot40", title: "Radiohead - Jigsaw Falling Into Place @ Madrid 2025-11-05" },
-                    { id: "NoHq8-n6F_A", title: "Radiohead - Lucky @ Madrid 2025-11-04" },
-                    { id: "r2m274blhcc", title: "Radiohead - The Gloaming @ Madrid 2025-11-04" },
-                    { id: "jRx7E71sDoU", title: "Radiohead : Madrid (Le 05 Novembre 2025)" },
+                    { id: "cmXDj-WeIqA", title: "RADIOHEAD — Full Show in Madrid 04/11/2025", date: "2025-11-04" },
+                    { id: "ze8ZAlTyEIU", title: "Radiohead - FULL SHOW - live Madrid 2025-11-04 night 1 European Tour complete concert", date: "2025-11-04" },
+                    { id: "-37QCDxOcak", title: "Radiohead Live Full Show Movistar Arena Madrid Spain November 5 2025 Night 2", date: "2025-11-05" },
+                    { id: "fVqSV6seT-U", title: "Radiohead - Madrid 3rd night (FULL SHOW)", date: "2025-11-07" },
+                    { id: "QzJs81sQ4Kg", title: "All I Need // 2025-11-05 Radiohead, Movistar Arena, Madrid // Strangeloving", date: "2025-11-05" },
+                    { id: "7vJidz9ngfA", title: "Radiohead - Exit Music (For a Film) | Madrid Night 4", date: "2025-11-08" },
+                    { id: "DOlcBb60AG0", title: "Idioteque // 2025-11-04 Radiohead, Movistar Arena, Madrid // Strangeloving", date: "2025-11-04" },
+                    { id: "FqT9RPdN_rU", title: "RADIOHEAD 2025 First song live since 2018! Movistar Arena Madrid 04/11/2025", date: "2025-11-04" },
+                    { id: "qCu7IAnpCLU", title: "Radiohead 11/5/25 Planet Telex at Movistar Arena in Madrid,Spain", date: "2025-11-05" },
+                    { id: "XlUbeAy6LSE", title: "Radiohead - The Bends - live Madrid 2025-11-08 night 4", date: "2025-11-08" },
+                    { id: "Hf8X6HDQM3E", title: "Radiohead - How To Disappear Completely | Madrid Movistar Arena | Nov 4, 2025 | Tour Opening Show", date: "2025-11-04" },
+                    { id: "yhkaC_o-WAo", title: "Radiohead First show of 2025 tour @Movistar Arena, Madrid. First three Encores", date: "2025-11-04" },
+                    { id: "CNrVXPYqHoE", title: "RADIOHEAD - there there @ MADRID 07/11/2025", date: "2025-11-07" },
+                    { id: "6dBywGE_w-c", title: "Radiohead - Everything In Its Right Place (Live in Madrid, 04.11.2025)", date: "2025-11-04" },
+                    { id: "X1EA7HAniQo", title: "Radiohead - EXIT MUSIC Live @ Madrid Night 2 | 05.11.2025", date: "2025-11-05" },
+                    { id: "XvtOPJUxsk8", title: "Radiohead 11/4/25 No Surprises at Movistar Arena in Madrid,Spain", date: "2025-11-04" },
+                    { id: "GPGWei_qcVk", title: "RADIOHEAD - weird fishes/arpeggi @ MADRID 07/11/2025", date: "2025-11-07" },
+                    { id: "MX7FF0k-ScI", title: "Radiohead - Nude - live from Madrid 2025-11-05 night 2 European Tour", date: "2025-11-05" },
+                    { id: "t896-xS5I58", title: "Radiohead Live at Movistar Arena Madrid – Concert Experience (Nov 2025)", date: "2025-11-05" },
+                    { id: "6Gj46CRVE8o", title: "Radiohead - Paranoid Android @ Movistar Arena Madrid 4-NOV-2025 (4K)", date: "2025-11-04" },
+                    { id: "6BQcG79LeNw", title: "Radiohead - Optimistic - live Madrid 2025-11-08 night 4", date: "2025-11-08" },
+                    { id: "tVDK-BPCzpU", title: "RADIOHEAD 1 - Madrid 5 Nov 2025", date: "2025-11-05" },
+                    { id: "fr4DBt_ljcI", title: "RADIOHEAD 2 - Madrid 5 Nov 2025", date: "2025-11-05" },
+                    { id: "HZhak93sTTo", title: "RADIOHEAD 3 - Madrid 5 Nov 2025", date: "2025-11-05" },
+                    { id: "Sv7PRgfEvvI", title: "Radiohead - How to Disappear Completely MULTICAM EDIT (Live in Madrid, 04-11-2025)", date: "2025-11-04" },
+                    { id: "ELPBlMHTYyE", title: "Radiohead - Fake Plastic Trees MULTICAM EDIT (Live in Madrid, 04-11-2025)", date: "2025-11-04" },
+                    { id: "w4e9GzJi5Oc", title: "Radiohead - The National Anthem MULTICAM EDIT (Live in Madrid, 04-11-2025)", date: "2025-11-04" },
+                    { id: "jCPPIt76USE", title: "You and Whose Army? - Radiohead Live - Movistar Arena Madrid, Tour Europeo 2025", date: "2025-11-04" },
+                    { id: "YtE7uJ8P3SU", title: "Radiohead - 2+2=5 @ Madrid 2025-11-05", date: "2025-11-05" },
+                    { id: "Mo4aEwUot40", title: "Radiohead - Jigsaw Falling Into Place @ Madrid 2025-11-05", date: "2025-11-05" },
+                    { id: "NoHq8-n6F_A", title: "Radiohead - Lucky @ Madrid 2025-11-04", date: "2025-11-04" },
+                    { id: "r2m274blhcc", title: "Radiohead - The Gloaming @ Madrid 2025-11-04", date: "2025-11-04" },
+                    { id: "jRx7E71sDoU", title: "Radiohead : Madrid (Le 05 Novembre 2025)", date: "2025-11-05" },
                 ]
             },
             {
                 city: "Bologna", 
                 dates: "NOV 14-18",
                 realVideos: [
-                    { id: "1kIPZKFqtdY", title: "Radiohead - Full Live (@ Bologna 15/11/2025)" },
-                    { id: "uTMtoCLTcQA", title: "Radiohead Bologna 17th Nov 2025 full show HD" },
-                    { id: "avNFiJIYuXs", title: "Radiohead full live Bologna 14 novembre 2025 multicam" },
-                    { id: "KSP5jbAxMOs", title: "Radiohead Bologna 18th Nov 2025 full show in 4K" },
-                    { id: "tY5o5rOfGzc", title: "Radiohead - Full Live (live in Bologna at Unipol arena 18/11/2025) 4K" },
-                    { id: "17ezEAkou7k", title: "Paranoid Android - Radiohead // Bologna 15/11/2025 Unipol Arena" },
-                    { id: "HQSOhfFLn94", title: "Radiohead - How to Disappear Completely, Live in Bologna 17/11/2025 Night 3" },
-                    { id: "K2Pkih2bg9g", title: "Radiohead - Planet Telex (live in Bologna, 14.11.2025)" },
-                    { id: "-ThAOXum6vY", title: "Radiohead - Jigsaw Falling Into Place, Live in Bologna 18/11/2025 Night 4" },
-                    { id: "J3g_STgPzDw", title: "optimistic - radiohead bologna 2025" },
-                    { id: "HoSiMYrXIsU", title: "Radiohead - Just, Live in Bologna 17/11/2025 Night 3" },
-                    { id: "KTzc4eGE60g", title: "Radiohead / 2+2=5 - live a Bologna 14/11/2025" },
-                    { id: "ps4tn0X_DAU", title: "RADIOHEAD On Fire! (Live Bologna 11-17-2025)" },
-                    { id: "EevXXedIXAA", title: "Radiohead - A Wolf at the Door (Live @ Unipol Arena Bologna, 17/11/25)" },
-                    { id: "iwTRucDlKuU", title: "Radiohead - Bologna 2025 Night 4 - No Surprises" },
-                    { id: "1OS260CQinA", title: "Radiohead - Bologna 2025 Night 4 - Let Down" },
-                    { id: "0Q2eYqcaEtM", title: "Radiohead - Bologna 2025 Night 4 - Paranoid Android" },
-                    { id: "-1m9dTNIiS4", title: "Radiohead - How to disappear completely (Live Bologna 17/11/2025)" },
-                    { id: "_bXW3dcvooY", title: "Radiohead - No Surprises (Live Bologna 17/11/2025)" },
-                    { id: "A4bOEImG1cY", title: "Radiohead @ Unipol Arena, Bologna, Nov. 18, 2025: Paranoid Android" },
-                    { id: "aHBoKC0sFyk", title: "Radiohead @ Unipol Arena, Bologna, Nov. 18, 2025: Everything in Its Right Place" },
-                    { id: "xkVN0AIxXgc", title: "Radiohead - Present Tense : Live in Bologna 15/11/2025 Night 2" },
-                    { id: "KgYaRoEJLW4", title: "17th Nov 2025 Radiohead Bologna full show HD" },
-                    { id: "Y2UODjzk7iw", title: "Radiohead - (Nice Dream) : Live in Bologna 15/11/2025 Night 2" },
-                    { id: "U3jsHNWpGTg", title: "Radiohead - Optimistic : Live in Bologna 15/11/2025 Night 2" },
-                    { id: "PEqiyWBzZBQ", title: "Radiohead - The Gloaming (Live Bologna 27/11/2025)" },
-                    { id: "Y3UpzyeNdzs", title: "Radiohead Bologna 14-NOV-2025. Karma Police end" },
-                    { id: "dNipqQtbAYw", title: "Radiohead Bologna 15-NOV-2025. The Bends" },
-                    { id: "7QXn5Lipxo0", title: "Radiohead Bologna 14-NOV-2025. Long Intro + Planet Telex" },
-                    { id: "--PEBBAyMF0", title: "Radiohead - Bloom (Live Bologna 17/11/2025)" },
-                    { id: "Wut3r1VkANc", title: "Radiohead - Kid A (Live Bologna 17/11/2025, audio remaster)" },
-                    { id: "4vG7iaxwnB0", title: "Radiohead - Weird Fishes / Arpeggi (Live Bologna 17/11/2025)" },
-                    { id: "raRFWwIlP2s", title: "Present Tense - Radiohead 18/11/2025 Bologna Filmed with Nintendo 3DS" },
-                    { id: "BGlUG_YTlVk", title: "Radiohead - Let Down (Live @ Unipol Arena Bologna, 17/11/25)" },
-                    { id: "aWElTDtbQzU", title: "Radiohead - No Surprises (Live @ Unipol Arena Bologna, 17/11/25)" },
-                    { id: "oRTty_w9JdM", title: "Radiohead - Weird Fishes/Arpeggi (Live @ Unipol Arena Bologna, 17/11/25)" },
-                    { id: "A8Itl-X2B3U", title: "Radiohead - Lucky (Live @ Unipol Arena Bologna, 17/11/25)" },
-                    { id: "kq849iDSV-g", title: "Radiohead - Videotape (Live @ Unipol Arena Bologna, 17/11/25)" },
-                    { id: "9hFstXUQIS0", title: "Radiohead - How to Disappear Completely (Live @ Unipol Arena Bologna, 17/11/25)" },
-                    { id: "WJ-ob_jmiOk", title: "Radiohead - Planet Telex (Live in Bologna, 14 November 2025)" },
-                    { id: "28PxybCvyRA", title: "Radiohead - You and Whose Army (Live in Bologna, 14 November 2025)" },
-                    { id: "DUOvJyQtKcQ", title: "Radiohead - Fake Plastic Trees /Ending/ (Live in Bologna, 14 November 2025)" },
-                    { id: "U72f0uXGIXY", title: "Radiohead - The Gloaming (Live @ Unipol Arena Bologna, 17/11/25)" },
+                    { id: "1kIPZKFqtdY", title: "Radiohead - Full Live (@ Bologna 15/11/2025)", date: "2025-11-15" },
+                    { id: "uTMtoCLTcQA", title: "Radiohead Bologna 17th Nov 2025 full show HD", date: "2025-11-17" },
+                    { id: "avNFiJIYuXs", title: "Radiohead full live Bologna 14 novembre 2025 multicam", date: "2025-11-14" },
+                    { id: "KSP5jbAxMOs", title: "Radiohead Bologna 18th Nov 2025 full show in 4K", date: "2025-11-18" },
+                    { id: "tY5o5rOfGzc", title: "Radiohead - Full Live (live in Bologna at Unipol arena 18/11/2025) 4K", date: "2025-11-18" },
+                    { id: "17ezEAkou7k", title: "Paranoid Android - Radiohead // Bologna 15/11/2025 Unipol Arena", date: "2025-11-15" },
+                    { id: "HQSOhfFLn94", title: "Radiohead - How to Disappear Completely, Live in Bologna 17/11/2025 Night 3", date: "2025-11-17" },
+                    { id: "K2Pkih2bg9g", title: "Radiohead - Planet Telex (live in Bologna, 14.11.2025)", date: "2025-11-14" },
+                    { id: "-ThAOXum6vY", title: "Radiohead - Jigsaw Falling Into Place, Live in Bologna 18/11/2025 Night 4", date: "2025-11-18" },
+                    { id: "J3g_STgPzDw", title: "optimistic - radiohead bologna 18/11/2025", date: "2025-11-18" },
+                    { id: "HoSiMYrXIsU", title: "Radiohead - Just, Live in Bologna 17/11/2025 Night 3", date: "2025-11-17" },
+                    { id: "KTzc4eGE60g", title: "Radiohead / 2+2=5 - live a Bologna 14/11/2025", date: "2025-11-14" },
+                    { id: "ps4tn0X_DAU", title: "RADIOHEAD On Fire! (Live Bologna 11-17-2025)", date: "2025-11-17" },
+                    { id: "EevXXedIXAA", title: "Radiohead - A Wolf at the Door (Live @ Unipol Arena Bologna, 17/11/25)", date: "2025-11-17" },
+                    { id: "iwTRucDlKuU", title: "Radiohead - Bologna 2025 Night 4 - No Surprises", date: "2025-11-18" },
+                    { id: "1OS260CQinA", title: "Radiohead - Bologna 2025 Night 4 - Let Down", date: "2025-11-18" },
+                    { id: "0Q2eYqcaEtM", title: "Radiohead - Bologna 2025 Night 4 - Paranoid Android", date: "2025-11-18" },
+                    { id: "-1m9dTNIiS4", title: "Radiohead - How to disappear completely (Live Bologna 17/11/2025)", date: "2025-11-17" },
+                    { id: "_bXW3dcvooY", title: "Radiohead - No Surprises (Live Bologna 17/11/2025)", date: "2025-11-17" },
+                    { id: "A4bOEImG1cY", title: "Radiohead @ Unipol Arena, Bologna, Nov. 18, 2025: Paranoid Android", date: "2025-11-18" },
+                    { id: "aHBoKC0sFyk", title: "Radiohead @ Unipol Arena, Bologna, Nov. 18, 2025: Everything in Its Right Place", date: "2025-11-18" },
+                    { id: "xkVN0AIxXgc", title: "Radiohead - Present Tense : Live in Bologna 15/11/2025 Night 2", date: "2025-11-15" },
+                    { id: "KgYaRoEJLW4", title: "17th Nov 2025 Radiohead Bologna full show HD", date: "2025-11-17" },
+                    { id: "Y2UODjzk7iw", title: "Radiohead - (Nice Dream) : Live in Bologna 15/11/2025 Night 2", date: "2025-11-15" },
+                    { id: "U3jsHNWpGTg", title: "Radiohead - Optimistic : Live in Bologna 15/11/2025 Night 2", date: "2025-11-15" },
+                    { id: "PEqiyWBzZBQ", title: "Radiohead - The Gloaming (Live Bologna 17/11/2025)", date: "2025-11-17" },
+                    { id: "Y3UpzyeNdzs", title: "Radiohead Bologna 14-NOV-2025. Karma Police end", date: "2025-11-14" },
+                    { id: "dNipqQtbAYw", title: "Radiohead Bologna 15-NOV-2025. The Bends", date: "2025-11-15" },
+                    { id: "7QXn5Lipxo0", title: "Radiohead Bologna 14-NOV-2025. Long Intro + Planet Telex", date: "2025-11-14" },
+                    { id: "--PEBBAyMF0", title: "Radiohead - Bloom (Live Bologna 17/11/2025)", date: "2025-11-17" },
+                    { id: "Wut3r1VkANc", title: "Radiohead - Kid A (Live Bologna 17/11/2025, audio remaster)", date: "2025-11-17" },
+                    { id: "4vG7iaxwnB0", title: "Radiohead - Weird Fishes / Arpeggi (Live Bologna 17/11/2025)", date: "2025-11-17" },
+                    { id: "raRFWwIlP2s", title: "Present Tense - Radiohead 18/11/2025 Bologna Filmed with Nintendo 3DS", date: "2025-11-18" },
+                    { id: "BGlUG_YTlVk", title: "Radiohead - Let Down (Live @ Unipol Arena Bologna, 17/11/25)", date: "2025-11-17" },
+                    { id: "aWElTDtbQzU", title: "Radiohead - No Surprises (Live @ Unipol Arena Bologna, 17/11/25)", date: "2025-11-17" },
+                    { id: "oRTty_w9JdM", title: "Radiohead - Weird Fishes/Arpeggi (Live @ Unipol Arena Bologna, 17/11/25)", date: "2025-11-17" },
+                    { id: "A8Itl-X2B3U", title: "Radiohead - Lucky (Live @ Unipol Arena Bologna, 17/11/25)", date: "2025-11-17" },
+                    { id: "kq849iDSV-g", title: "Radiohead - Videotape (Live @ Unipol Arena Bologna, 17/11/25)", date: "2025-11-17" },
+                    { id: "9hFstXUQIS0", title: "Radiohead - How to Disappear Completely (Live @ Unipol Arena Bologna, 17/11/25)", date: "2025-11-17" },
+                    { id: "WJ-ob_jmiOk", title: "Radiohead - Planet Telex (Live in Bologna, 14 November 2025)", date: "2025-11-14" },
+                    { id: "28PxybCvyRA", title: "Radiohead - You and Whose Army (Live in Bologna, 14 November 2025)", date: "2025-11-14" },
+                    { id: "DUOvJyQtKcQ", title: "Radiohead - Fake Plastic Trees /Ending/ (Live in Bologna, 14 November 2025)", date: "2025-11-14" },
+                    { id: "U72f0uXGIXY", title: "Radiohead - The Gloaming (Live @ Unipol Arena Bologna, 17/11/25)", date: "2025-11-17" },
                 ]
             },
             {
                 city: "London", 
                 dates: "NOV 21-25",
                 realVideos: [
-                    { id: "gKOJrbaVkVM", title: "Radiohead London o2 live full concert 4k" }, 
-                    { id: "uISsWgTpHnw", title: "Paranoid Android - Radiohead - London" },
-                    { id: "_KsR0NkBzAY", title: "Radiohead - Reckoner (Live) - The 02, London - 22-11-2025" },
-                    { id: "5U2fq63173c", title: "Radiohead - All I Need (Live) - The 02, London - 22-11-2025" },
-                    { id: "7E_c592nViw", title: "Radiohead - Jigsaw Falling Into Place (Live) - The 02, London - 22-11-2025" },
-                    { id: "Skf72NYJXo0", title: "Just - Radiohead - o2 London - 21.11.2025" },
-                    { id: "HweIP50pglA", title: "Radiohead - Planet Telex - London O2 Arena - 21st November 2025" },
-                    { id: "IytYDbpA4-g", title: "Radiohead - Kid A - Live at The O2 Arena London 21/11/25" },
-                    { id: "xNXqvlf34eY", title: "Radiohead - Paranoid Android - Live at The O2 Arena London 21/11/25" },
-                    { id: "hYZTAJbQBlE", title: "RADIOHEAD - THE BENDS, LONDON O2, 22nd NOV 2025" },
-                    { id: "0QAIK3eTkY0", title: "RADIOHEAD - 2+2=5, LONDON O2, 22nd NOV 2025" },
-                    { id: "QOfKWSa4beo", title: "Radiohead- Street Spirit (O2 Arena London 22/11/2025" },
-                    { id: "fcA2b-UIKs4", title: "RADIOHEAD - LET DOWN, LONDON O2, 22nd NOV 2025" },
-                    { id: "wnBv1Z21sPE", title: "exit music - radiohead london 2025" },
-                    { id: "xvBE5QSZTFk", title: "RADIOHEAD - EVERYTHING IN ITS RIGHT PLACE, LONDON O2, 22nd NOV 2025" },
-                    { id: "lonpsppJLVo", title: "ful stop - radiohead london 2025" },
-                    { id: "i5KZfNq7hoo", title: "Karma Police - Radiohead - O2 London - 21.11.2025" },
-                    { id: "OsNfe43zNYs", title: "Radiohead - No Surprises live @ O2 Arena, London 2025" },
-                    { id: "q0DlPzq0J1g", title: "Paranoid Android - Radiohead - o2 London - 21.11.2025" },
-                    { id: "Qdnc0U2KaoY", title: "RADIOHEAD - AIRBAG, LONDON O2, 22nd NOV 2025" },
-                    { id: "DKV7DyF7gsA", title: "RADIOHEAD - NO SURPRISES, LONDON O2, 22nd NOV 2025" },
-                    { id: "eE4lcd9cbHY", title: "Radiohead - Paranoid Android (Live) - The 02, London - 22-11-2025" },
-                    { id: "ORYlcc9noIk", title: "Karma Police live. Radiohead O2 London" },
-                    { id: "fGIwOxrpUdc", title: "RADIOHEAD - SIT DOWN. STAND UP, LONDON O2, 22nd NOV 2025" },
-                    { id: "75CcgzKO9kg", title: "kid a - radiohead london 2025" },
-                    { id: "hrrBpZiT4-g", title: "Radiohead - Let Down (Live) - The 02, London - 22-11-2025" },
-                    { id: "jJoIti47xQE", title: "Radiohead - Optimistic (Live) - The 02, London - 22-11-2025" },
-                    { id: "RO_xlKVHAbU", title: "Radiohead - Nude (Live) - The 02, London - 22-11-2025" },
-                    { id: "Mq3Fwbk_-fQ", title: "No Surprises - Radiohead - O2 London - 21.11.2025" },
-                    { id: "e_o7QuQiLZc", title: "No Surprises - Radiohead 21-nov-2025, O2 Arena London" },
-                    { id: "k90aZQua9w0", title: "Radiohead - Let Down - London O2 Arena - 21st November 2025" },
-                    { id: "G-Ld0N-5Nzw", title: "Radiohead - Separator (Live) - The 02, London -22-11-2025" },
-                    { id: "8PdF7rIeJmA", title: "Radiohead - Weird Fishes/Arpeggi @ The O2 Arena, London, 21/11/2025" },
-                    { id: "IojSFOMt6-w", title: "sit down stand up - radiohead london 2025" },
-                    { id: "E3tJsfK3LLc", title: "Radiohead Perform Karma Police at London's O2 Arena" },
-                    { id: "urjlpYrxSVM", title: "15 step - radiohead london 2025" },
-                    { id: "soP_8gsRvGo", title: "Let Down - Radiohead. Live at the o2 Arena, London. 21/11/25. @Radiohead" },
-                    { id: "H_rWWC8grFk", title: "Kid A - Radiohead 21-nov-2025, O2 Arena London" },
-                    { id: "Uis96pgKIzU", title: "Radiohead - Fake Plastic Trees - O2 Arena, London 21/11/2025 - Night 1" },
-                    { id: "XSVvK3lsGgc", title: "paranoid android - radiohead london 2025" },
-                    { id: "AiAj-fsAcig", title: "Radiohead - You and Whose Army? (Live at The O2, London 25/11/25)" },
-                    { id: "JTPsrIRKffI", title: "Daydreaming - Radiohead (O2, London 24/11/2025)" },
-                    { id: "dldefb8lw4Q", title: "Let Down - Radiohead. Live at the O2, London. 24/11/25. ‪‪‪@Radiohead‬" },
-                    { id: "BxsaFh2_mrw", title: "Radiohead - Day 4 Live at O2, London, 25/11/2025" },
-                    { id: "tRQsuZR1cRs", title: "Radiohead - Karma Police (Live at the O2 London)" },
-                    { id: "NPkyvy5tT8U", title: "2+2=5 (excerpt) - Radiohead Live - O2 London - 24th Nov 2025" },
-                    { id: "q0EHtb-Vixw", title: "Radiohead - Paranoid Android - London O2 Arena - November 25 2025" },
-                    { id: "umvzmKNsIsc", title: "Radiohead - Street Spirit (Fade Out) - London O2 Arena - November 25 2025" },
-                    { id: "iBODcNmaSuI", title: "Present Tense - Radiohead live O2 Arena, London, 25 November 2025" },
-                    { id: "xmBA16wcrNw", title: "Radiohead - Exit Music (for a Film) - London O2 Arena - November 25 2025" },
-                    { id: "akz11Rc10Ts", title: "Let Down - Radiohead live O2 Arena, London, 25 November 2025" },
-                    { id: "lXzdkSqw06I", title: "2 + 2 = 5 - Radiohead live O2 Arena, London, 25 November 2025" },
-                    { id: "6VIiqdB90r0", title: "Jigsaw Falling Into Place - Radiohead live O2 Arena, London, 25 November 2025" },
-                    { id: "wPp35uE9YpY", title: "Nude - Radiohead live O2 Arena, London, 25 November 2025" },
-                    { id: "TEC0B9a7mv0", title: "pyramid song - radiohead london 2025" },
-                    { id: "alwpWStXWd0", title: "exit music - radiohead london 2025" },
-                    { id: "43x68J84kDA", title: "Radiohead - Paranoid Android (London 24.11.2015)" },
-                    { id: "1DR2L9AXICU", title: "Bloom - Radiohead. Live at the O2, London. 24/11/25. Radiohead‬" },
-                    { id: "XkmfZ436LSM", title: "Sit Down Stand Up - Radiohead. Live at the O2, London. 24/11/25. Radiohead‬" },
-                    { id: "onpIo9rM4pM", title: "2+2=5 - Radiohead. Live at the O2, London. 24/11/25." },
-                    { id: "4EzbzyFvC3g", title: "Lucky - Radiohead. Live at the O2, London. 24/11/25" },
-                    { id: "0czj8YGKnOo", title: "The Gloaming - Radiohead. Live at the O2, London. 24/11/25" },
-                    { id: "bfAQhDmQWgg", title: "15 Step - Radiohead. Live at the O2, London. 24/11/25" },
-                    { id: "9KHk2nTPQrw", title: "Reckoner - Radiohead live O2 Arena, London, 25 November 2025" },
-                    { id: "qLet5Sf_W8g", title: "The Bends - Radiohead live O2 Arena, London, 25 November 2025" },
-                    { id: "XpDHiX058Vk", title: "Kid A - Radiohead. Live at the O2, London. 24/11/25" },
-                    { id: "EIjQEaCSdIU", title: "2025-11-25 - Radiohead: Like Spinning Plates (O2 Arena, London)" },
-                    { id: "0SCZNzBY9vk", title: "Radiohead - Pyramid Song (Live at The O2, London 25/11/25)" },
-                    { id: "O1VEzFOqhLs", title: "Radiohead - There, There (Live at The O2, London 25/11/25)" },
-                    { id: "4ZXS9KZX4JY", title: "Radiohead - Paranoid Android (Live at The O2, London 25/11/25)" },
-                    { id: "IJBPdNAiuPA", title: "Radiohead - Present Tense (Live at The O2, London 25/11/25)" },
-                    { id: "7SqkHbQtZNk", title: "Sit Down. Stand Up. - Radiohead live O2 Arena, London, 25 November 2025" },
-                    { id: "AMubeqqFqt8", title: "Radiohead - All I Need (Live at The O2, London 25/11/25)" },
-                    { id: "YTcXWGh7UNo", title: "Radiohead - Myxomatosis (Live at The O2, London 25/11/25)" },
-                    { id: "yhsv-9kcMzM", title: "Radiohead - Ful Stop (Live at The O2, London 25/11/25)" },
-                    { id: "lbLOoksChO4", title: "No Surprises - Radiohead live O2 Arena, London, 25 November 2025" },
-                    { id: "aNX68V9zgLg", title: "Radiohead - Jigsaw Falling Into Place (Live at The O2, London 25/11/25)" },
-                    { id: "Y1BMZq5-cSo", title: "Radiohead - You and Whose Army? (Live at the O2 , London 25/11)" },
-                    { id: "UyQchphYpXU", title: "Optimistic - Radiohead live O2 Arena, London, 25 November 2025" },
-                    { id: "pyClnzeH0Mc", title: "Radiohead ~ Paranoid Android (O2 Arena, London, November 25, 2025) LIVE/4K" },
-                    { id: "BH8ELP0DQko", title: "idioteque - radiohead london 2025 night 4" },
-                    { id: "-v5sHW8_8nI", title: "myxomatosis - radiohead london 2025" },
-                    { id: "ynLjAYuHbW0", title: "no surprises - radiohead london 2025" },
-                    { id: "m2jmj-XbJzc", title: "Exit Music (For a Film) - Radiohead live O2 Arena, London, 25 November 2025" },
-                    { id: "aN7aFeOujsM", title: "Street Spirit - Radiohead live O2 Arena, London, 25 November 2025" },
-                    { id: "vRjRpS3Y8sg", title: "Radiohead - Pyramid Song - live London 2025" },
-                    { id: "Sks2QTRBdGM", title: "There, There - Radiohead live O2 Arena, London, 25 November 2025" },
-                    { id: "yFiaLDcKir8", title: "Like Spinning Plates - Radiohead. Live at the O2, London. 26/11/25" },
-                    { id: "EmASuP_Batw", title: "Radiohead - Pyramid Song (O2 Arena, London, November 25, 2025) LIVE/4K" },
-                    { id: "5bpnP4XtdJM", title: "Like Spinning Plates - Radiohead live O2 Arena London, 25 November 2025" },
-                    { id: "CpGrj8oKk70", title: "Radiohead - Ful Stop (O2 Arena, London, November 25, 2025) LIVE/4K" },
-                    { id: "h6ijhehVQJU", title: "Radiohead - Exit Music (For a Film) (Live at The O2, London 25/11/25)" },
-                    { id: "28I2ElKHD44", title: "Radiohead - Exit Music - O2 Arena, London 25/11/2025 - Night 4" },
-                    { id: "UOJEi1IaKsU", title: "Radiohead - Sit Down, Stand Up - O2 Arena, London 25/11/2025 - Night 4" },
-                    { id: "Aos0ECqkY6c", title: "Radiohead - Present Tense - O2 Arena, London 25/11/2025 - Night 4" },
-                    { id: "bUeQWctGZ4E", title: "Radiohead - Like Spinning Plates (Tour Debut) - O2 Arena, London 25/11/2025 - Night 4" },
-                    { id: "0n-DRPaNVUk", title: "Radiohead - Like Spinning Plates (Live at The O2, London 25/11/25)" },
-                    { id: "wzv90yM76Pc", title: "like spinning plates - radiohead london 2025" },
-                    { id: "B6hQOQs5dLQ", title: "Radiohead - Like Spinning Plates @ O2 Arena, London, 25/11/2025" },
-                    { id: "Pe2sRe2lE6M", title: "Planet Telex - Radiohead Live - O2 London - 24th November 2025" },
-                    { id: "RS4PvY08z2Y", title: "Radiohead - Idioteque (London O2 Arena) - 25 Nov 2026" },
-                    { id: "XivS2G-9rgc", title: "Paranoid Android - Radiohead Live - O2 London - 25 November 2025" },
-                    { id: "jcLQ2cTShcQ", title: "Radiohead - No Surprises (London O2 Arena) - 25th Nov 2026" },
-                    { id: "SvDkJfdv_tQ", title: "Radiohead – Daydreaming live in London (The O2, 24/11/2025)" },
-                    { id: "2V8rXQLzsnI", title: "KARMA POLICE 21/11/2025 RADIOHEAD LONDON NIGHT1" },
-                    { id: "9Bl3GCLAW30", title: "Radiohead – 15 Step live London (The O2, 24/11/2025)" },
-                    { id: "bA4BddB2kpU", title: "Everything In It's Right Place - Radiohead (O2, London 24/11/2025)" },
-                    { id: "tZqvJsLdQBQ", title: "Just - Radiohead (O2, London 24/11/2025)" },
-                    { id: "mZdjprKEXE0", title: "Fake Plastic Trees - Radiohead - London 24.11.2025" },
-                    { id: "UF2xLmxTMW8", title: "Jigsaw Falling Into Place - Radiohead - London 24.11.2025" },
-                    { id: "YY5aUtTutMA", title: "All I Need - Radiohead - London 24.11.2025" },
-                    { id: "sLCZbiV4q2M", title: "Weird Fishes / Arpeggi - Radiohead - London 24.11.2025" },
-                    { id: "tq3dW7IBFVo", title: "Let Down - Radiohead - London 24.11.2025" },
-                    { id: "DEsZId40A3E", title: "Everything In Its Right Place - Radiohead - London 24.11.2025" },
-                    { id: "qSZOYAef9_U", title: "Climbing Up the Walls - Radiohead - London 24.11.2025" },
-                    { id: "h-Z4bgfh1oA", title: "No Surprises - Radiohead - London 24.11.2025" },
-                    { id: "FolhXf2qv3c", title: "Lucky - Radiohead - London 24.11.2025" },
-                    { id: "b-lrqdZK4dI", title: "Planet Telex - Radiohead - London 24.11.2025" },
-                    { id: "U5yb5NPtVOU", title: "Radiohead - Paranoid Android, London 2025" },
-                    { id: "LM7TOcNPb84", title: "radiohead \\ 2_2_5 —LONDON of ENGLAND • 22NOVEMBER, two thousand and [possibly] five" },
-                    { id: "gv78kaqGeNE", title: "radiohead \\ KID_A \\London•England [21.11.2005]" },
-                    { id: "3KL8j8gyUsQ", title: "lucky - radiohead london 2025" },
-                    { id: "uWtxGrrXII8", title: "2+2=5 - radiohead london" },
-                    { id: "kQDIcDjgVnM", title: "Radiohead Live 24/11/25 clips" },
-                    { id: "URL_1w0vS9o", title: "paranoid android - radiohead london 2025" },
-                    { id: "ykoW0k2LYdI", title: "karma police - radiohead london 2025" },
-                    { id: "LaOXVE9744o", title: "Radiohead LIVE - FULL GIG - November 2025 - London" },
-                    { id: "HAgS02VL3_E", title: "Radiohead Live at The O2 London, 24th November 2025" },
-                    { id: "06L9Z0GlQYI", title: "Radiohead Live at The O2 London (Almost) Full Concert – 24 November 2025" },
-                    { id: "d8gJAWwDX5M", title: "Just - Radiohead - London - 24th November 2025" },
-                    { id: "Raa2QRGMFo4", title: "Radiohead – Karma Police live London (The O2, 24/11/2025)" },
-                    { id: "MSFHDRuu1u4", title: "Radiohead – All I Need live London (The O2, 24/11/2025)" },
+                    { id: "gKOJrbaVkVM", title: "Radiohead London o2 live full concert 4k", date: "2025-11-21" },
+                    { id: "uISsWgTpHnw", title: "Paranoid Android - Radiohead - London", date: "2025-11-21" },
+                    { id: "_KsR0NkBzAY", title: "Radiohead - Reckoner (Live) - The 02, London - 22-11-2025", date: "2025-11-22" },
+                    { id: "5U2fq63173c", title: "Radiohead - All I Need (Live) - The 02, London - 22-11-2025", date: "2025-11-22" },
+                    { id: "7E_c592nViw", title: "Radiohead - Jigsaw Falling Into Place (Live) - The 02, London - 22-11-2025", date: "2025-11-22" },
+                    { id: "Skf72NYJXo0", title: "Just - Radiohead - o2 London - 21.11.2025", date: "2025-11-21" },
+                    { id: "HweIP50pglA", title: "Radiohead - Planet Telex - London O2 Arena - 21st November 2025", date: "2025-11-21" },
+                    { id: "IytYDbpA4-g", title: "Radiohead - Kid A - Live at The O2 Arena London 21/11/25", date: "2025-11-21" },
+                    { id: "xNXqvlf34eY", title: "Radiohead - Paranoid Android - Live at The O2 Arena London 21/11/25", date: "2025-11-21" },
+                    { id: "hYZTAJbQBlE", title: "RADIOHEAD - THE BENDS, LONDON O2, 22nd NOV 2025", date: "2025-11-22" },
+                    { id: "0QAIK3eTkY0", title: "RADIOHEAD - 2+2=5, LONDON O2, 22nd NOV 2025", date: "2025-11-22" },
+                    { id: "QOfKWSa4beo", title: "Radiohead- Street Spirit (O2 Arena London 22/11/2025", date: "2025-11-22" },
+                    { id: "fcA2b-UIKs4", title: "RADIOHEAD - LET DOWN, LONDON O2, 22nd NOV 2025", date: "2025-11-22" },
+                    { id: "wnBv1Z21sPE", title: "exit music - radiohead london 2025", date: "" },
+                    { id: "xvBE5QSZTFk", title: "RADIOHEAD - EVERYTHING IN ITS RIGHT PLACE, LONDON O2, 22nd NOV 2025", date: "2025-11-22" },
+                    { id: "lonpsppJLVo", title: "ful stop - radiohead london 2025", date: "" },
+                    { id: "i5KZfNq7hoo", title: "Karma Police - Radiohead - O2 London - 21.11.2025", date: "2025-11-21" },
+                    { id: "OsNfe43zNYs", title: "Radiohead - No Surprises live @ O2 Arena, London 2025", date: "" },
+                    { id: "q0DlPzq0J1g", title: "Paranoid Android - Radiohead - o2 London - 21.11.2025", date: "2025-11-21" },
+                    { id: "Qdnc0U2KaoY", title: "RADIOHEAD - AIRBAG, LONDON O2, 22nd NOV 2025", date: "2025-11-22" },
+                    { id: "DKV7DyF7gsA", title: "RADIOHEAD - NO SURPRISES, LONDON O2, 22nd NOV 2025", date: "2025-11-22" },
+                    { id: "eE4lcd9cbHY", title: "Radiohead - Paranoid Android (Live) - The 02, London - 22-11-2025", date: "2025-11-22" },
+                    { id: "ORYlcc9noIk", title: "Karma Police live. Radiohead O2 London", date: "" },
+                    { id: "fGIwOxrpUdc", title: "RADIOHEAD - SIT DOWN. STAND UP, LONDON O2, 22nd NOV 2025", date: "2025-11-22" },
+                    { id: "75CcgzKO9kg", title: "kid a - radiohead london 2025", date: "" },
+                    { id: "hrrBpZiT4-g", title: "Radiohead - Let Down (Live) - The 02, London - 22-11-2025", date: "2025-11-22" },
+                    { id: "jJoIti47xQE", title: "Radiohead - Optimistic (Live) - The 02, London - 22-11-2025", date: "2025-11-22" },
+                    { id: "RO_xlKVHAbU", title: "Radiohead - Nude (Live) - The 02, London - 22-11-2025", date: "2025-11-22" },
+                    { id: "Mq3Fwbk_-fQ", title: "No Surprises - Radiohead - O2 London - 21.11.2025", date: "2025-11-21" },
+                    { id: "e_o7QuQiLZc", title: "No Surprises - Radiohead 21-nov-2025, O2 Arena London", date: "2025-11-21" },
+                    { id: "k90aZQua9w0", title: "Radiohead - Let Down - London O2 Arena - 21st November 2025", date: "2025-11-21" },
+                    { id: "G-Ld0N-5Nzw", title: "Radiohead - Separator (Live) - The 02, London -22-11-2025", date: "2025-11-22" },
+                    { id: "8PdF7rIeJmA", title: "Radiohead - Weird Fishes/Arpeggi @ The O2 Arena, London, 21/11/2025", date: "2025-11-21" },
+                    { id: "IojSFOMt6-w", title: "sit down stand up - radiohead london 2025", date: "" },
+                    { id: "E3tJsfK3LLc", title: "Radiohead Perform Karma Police at London's O2 Arena", date: "" },
+                    { id: "urjlpYrxSVM", title: "15 step - radiohead london 2025", date: "" },
+                    { id: "soP_8gsRvGo", title: "Let Down - Radiohead. Live at the o2 Arena, London. 21/11/25. @Radiohead", date: "2025-11-21" },
+                    { id: "H_rWWC8grFk", title: "Kid A - Radiohead 21-nov-2025, O2 Arena London", date: "2025-11-21" },
+                    { id: "Uis96pgKIzU", title: "Radiohead - Fake Plastic Trees - O2 Arena, London 21/11/2025 - Night 1", date: "2025-11-21" },
+                    { id: "XSVvK3lsGgc", title: "paranoid android - radiohead london 2025", date: "" },
+                    { id: "AiAj-fsAcig", title: "Radiohead - You and Whose Army? (Live at The O2, London 25/11/25)", date: "2025-11-25" },
+                    { id: "JTPsrIRKffI", title: "Daydreaming - Radiohead (O2, London 24/11/2025)", date: "2025-11-24" },
+                    { id: "dldefb8lw4Q", title: "Let Down - Radiohead. Live at the O2, London. 24/11/25. ‪‪‪@Radiohead‬", date: "2025-11-24" },
+                    { id: "BxsaFh2_mrw", title: "Radiohead - Day 4 Live at O2, London, 25/11/2025", date: "2025-11-25" },
+                    { id: "tRQsuZR1cRs", title: "Radiohead - Karma Police (Live at the O2 London)", date: "" },
+                    { id: "NPkyvy5tT8U", title: "2+2=5 (excerpt) - Radiohead Live - O2 London - 24th Nov 2025", date: "2025-11-24" },
+                    { id: "q0EHtb-Vixw", title: "Radiohead - Paranoid Android - London O2 Arena - November 25 2025", date: "2025-11-25" },
+                    { id: "umvzmKNsIsc", title: "Radiohead - Street Spirit (Fade Out) - London O2 Arena - November 25 2025", date: "2025-11-25" },
+                    { id: "iBODcNmaSuI", title: "Present Tense - Radiohead live O2 Arena, London, 25 November 2025", date: "2025-11-25" },
+                    { id: "xmBA16wcrNw", title: "Radiohead - Exit Music (for a Film) - London O2 Arena - November 25 2025", date: "2025-11-25" },
+                    { id: "akz11Rc10Ts", title: "Let Down - Radiohead live O2 Arena, London, 25 November 2025", date: "2025-11-25" },
+                    { id: "lXzdkSqw06I", title: "2 + 2 = 5 - Radiohead live O2 Arena, London, 25 November 2025", date: "2025-11-25" },
+                    { id: "6VIiqdB90r0", title: "Jigsaw Falling Into Place - Radiohead live O2 Arena, London, 25 November 2025", date: "2025-11-25" },
+                    { id: "wPp35uE9YpY", title: "Nude - Radiohead live O2 Arena, London, 25 November 2025", date: "2025-11-25" },
+                    { id: "TEC0B9a7mv0", title: "pyramid song - radiohead london 25/11/2025", date: "2025-11-25" },
+                    { id: "alwpWStXWd0", title: "exit music - radiohead london 25/11/2025", date: "2025-11-25" },
+                    { id: "43x68J84kDA", title: "Radiohead - Paranoid Android (London 24.11.2015)", date: "2025-11-24" },
+                    { id: "1DR2L9AXICU", title: "Bloom - Radiohead. Live at the O2, London. 24/11/25. Radiohead‬", date: "2025-11-24" },
+                    { id: "XkmfZ436LSM", title: "Sit Down Stand Up - Radiohead. Live at the O2, London. 24/11/25. Radiohead‬", date: "2025-11-24" },
+                    { id: "onpIo9rM4pM", title: "2+2=5 - Radiohead. Live at the O2, London. 24/11/25.", date: "2025-11-24" },
+                    { id: "4EzbzyFvC3g", title: "Lucky - Radiohead. Live at the O2, London. 24/11/25", date: "2025-11-24" },
+                    { id: "0czj8YGKnOo", title: "The Gloaming - Radiohead. Live at the O2, London. 24/11/25", date: "2025-11-24" },
+                    { id: "bfAQhDmQWgg", title: "15 Step - Radiohead. Live at the O2, London. 24/11/25", date: "2025-11-24" },
+                    { id: "9KHk2nTPQrw", title: "Reckoner - Radiohead live O2 Arena, London, 25 November 2025", date: "2025-11-25" },
+                    { id: "qLet5Sf_W8g", title: "The Bends - Radiohead live O2 Arena, London, 25 November 2025", date: "2025-11-25" },
+                    { id: "XpDHiX058Vk", title: "Kid A - Radiohead. Live at the O2, London. 24/11/25", date: "2025-11-24" },
+                    { id: "EIjQEaCSdIU", title: "2025-11-25 - Radiohead: Like Spinning Plates (O2 Arena, London)", date: "2025-11-25" },
+                    { id: "0SCZNzBY9vk", title: "Radiohead - Pyramid Song (Live at The O2, London 25/11/25)", date: "2025-11-25" },
+                    { id: "O1VEzFOqhLs", title: "Radiohead - There, There (Live at The O2, London 25/11/25)", date: "2025-11-25" },
+                    { id: "4ZXS9KZX4JY", title: "Radiohead - Paranoid Android (Live at The O2, London 25/11/25)", date: "2025-11-25" },
+                    { id: "IJBPdNAiuPA", title: "Radiohead - Present Tense (Live at The O2, London 25/11/25)", date: "2025-11-25" },
+                    { id: "7SqkHbQtZNk", title: "Sit Down. Stand Up. - Radiohead live O2 Arena, London, 25 November 2025", date: "2025-11-25" },
+                    { id: "AMubeqqFqt8", title: "Radiohead - All I Need (Live at The O2, London 25/11/25)", date: "2025-11-25" },
+                    { id: "YTcXWGh7UNo", title: "Radiohead - Myxomatosis (Live at The O2, London 25/11/25)", date: "2025-11-25" },
+                    { id: "yhsv-9kcMzM", title: "Radiohead - Ful Stop (Live at The O2, London 25/11/25)", date: "2025-11-25" },
+                    { id: "lbLOoksChO4", title: "No Surprises - Radiohead live O2 Arena, London, 25 November 2025", date: "2025-11-25" },
+                    { id: "aNX68V9zgLg", title: "Radiohead - Jigsaw Falling Into Place (Live at The O2, London 25/11/25)", date: "2025-11-25" },
+                    { id: "Y1BMZq5-cSo", title: "Radiohead - You and Whose Army? (Live at the O2 , London 25/11)", date: "2025-11-25" },
+                    { id: "UyQchphYpXU", title: "Optimistic - Radiohead live O2 Arena, London, 25 November 2025", date: "2025-11-25" },
+                    { id: "pyClnzeH0Mc", title: "Radiohead ~ Paranoid Android (O2 Arena, London, November 25, 2025) LIVE/4K", date: "2025-11-25" },
+                    { id: "BH8ELP0DQko", title: "idioteque - radiohead london 2025 night 4", date: "2025-11-25" },
+                    { id: "-v5sHW8_8nI", title: "myxomatosis - radiohead london 2025", date: "" },
+                    { id: "ynLjAYuHbW0", title: "no surprises - radiohead london 2025", date: "" },
+                    { id: "m2jmj-XbJzc", title: "Exit Music (For a Film) - Radiohead live O2 Arena, London, 25 November 2025", date: "2025-11-25" },
+                    { id: "aN7aFeOujsM", title: "Street Spirit - Radiohead live O2 Arena, London, 25 November 2025", date: "2025-11-25" },
+                    { id: "vRjRpS3Y8sg", title: "Radiohead - Pyramid Song - live London 2025", date: "" },
+                    { id: "Sks2QTRBdGM", title: "There, There - Radiohead live O2 Arena, London, 25 November 2025", date: "2025-11-25" },
+                    { id: "yFiaLDcKir8", title: "Like Spinning Plates - Radiohead. Live at the O2, London. 26/11/25", date: "" },
+                    { id: "EmASuP_Batw", title: "Radiohead - Pyramid Song (O2 Arena, London, November 25, 2025) LIVE/4K", date: "2025-11-25" },
+                    { id: "5bpnP4XtdJM", title: "Like Spinning Plates - Radiohead live O2 Arena London, 25 November 2025", date: "2025-11-25" },
+                    { id: "CpGrj8oKk70", title: "Radiohead - Ful Stop (O2 Arena, London, November 25, 2025) LIVE/4K", date: "2025-11-25" },
+                    { id: "h6ijhehVQJU", title: "Radiohead - Exit Music (For a Film) (Live at The O2, London 25/11/25)", date: "2025-11-25" },
+                    { id: "28I2ElKHD44", title: "Radiohead - Exit Music - O2 Arena, London 25/11/2025 - Night 4", date: "2025-11-25" },
+                    { id: "UOJEi1IaKsU", title: "Radiohead - Sit Down, Stand Up - O2 Arena, London 25/11/2025 - Night 4", date: "2025-11-25" },
+                    { id: "Aos0ECqkY6c", title: "Radiohead - Present Tense - O2 Arena, London 25/11/2025 - Night 4", date: "2025-11-25" },
+                    { id: "bUeQWctGZ4E", title: "Radiohead - Like Spinning Plates (Tour Debut) - O2 Arena, London 25/11/2025 - Night 4", date: "2025-11-25" },
+                    { id: "0n-DRPaNVUk", title: "Radiohead - Like Spinning Plates (Live at The O2, London 25/11/25)", date: "2025-11-25" },
+                    { id: "wzv90yM76Pc", title: "like spinning plates - radiohead london 2025", date: "" },
+                    { id: "B6hQOQs5dLQ", title: "Radiohead - Like Spinning Plates @ O2 Arena, London, 25/11/2025", date: "2025-11-25" },
+                    { id: "Pe2sRe2lE6M", title: "Planet Telex - Radiohead Live - O2 London - 24th November 2025", date: "2025-11-24" },
+                    { id: "RS4PvY08z2Y", title: "Radiohead - Idioteque (London O2 Arena) - 25 Nov 2026", date: "2025-11-25" },
+                    { id: "XivS2G-9rgc", title: "Paranoid Android - Radiohead Live - O2 London - 25 November 2025", date: "2025-11-25" },
+                    { id: "jcLQ2cTShcQ", title: "Radiohead - No Surprises (London O2 Arena) - 25th Nov 2026", date: "2025-11-25" },
+                    { id: "SvDkJfdv_tQ", title: "Radiohead – Daydreaming live in London (The O2, 24/11/2025)", date: "2025-11-24" },
+                    { id: "2V8rXQLzsnI", title: "KARMA POLICE 21/11/2025 RADIOHEAD LONDON NIGHT1", date: "2025-11-21" },
+                    { id: "9Bl3GCLAW30", title: "Radiohead – 15 Step live London (The O2, 24/11/2025)", date: "2025-11-24" },
+                    { id: "bA4BddB2kpU", title: "Everything In It's Right Place - Radiohead (O2, London 24/11/2025)", date: "2025-11-24" },
+                    { id: "tZqvJsLdQBQ", title: "Just - Radiohead (O2, London 24/11/2025)", date: "2025-11-24" },
+                    { id: "mZdjprKEXE0", title: "Fake Plastic Trees - Radiohead - London 24.11.2025", date: "2025-11-24" },
+                    { id: "UF2xLmxTMW8", title: "Jigsaw Falling Into Place - Radiohead - London 24.11.2025", date: "2025-11-24" },
+                    { id: "YY5aUtTutMA", title: "All I Need - Radiohead - London 24.11.2025", date: "2025-11-24" },
+                    { id: "sLCZbiV4q2M", title: "Weird Fishes / Arpeggi - Radiohead - London 24.11.2025", date: "2025-11-24" },
+                    { id: "tq3dW7IBFVo", title: "Let Down - Radiohead - London 24.11.2025", date: "2025-11-24" },
+                    { id: "DEsZId40A3E", title: "Everything In Its Right Place - Radiohead - London 24.11.2025", date: "2025-11-24" },
+                    { id: "qSZOYAef9_U", title: "Climbing Up the Walls - Radiohead - London 24.11.2025", date: "2025-11-24" },
+                    { id: "h-Z4bgfh1oA", title: "No Surprises - Radiohead - London 24.11.2025", date: "2025-11-24" },
+                    { id: "FolhXf2qv3c", title: "Lucky - Radiohead - London 24.11.2025", date: "2025-11-24" },
+                    { id: "b-lrqdZK4dI", title: "Planet Telex - Radiohead - London 24.11.2025", date: "2025-11-24" },
+                    { id: "U5yb5NPtVOU", title: "Radiohead - Paranoid Android, London 2025", date: "" },
+                    { id: "LM7TOcNPb84", title: "radiohead \\ 2_2_5 —LONDON of ENGLAND • 22NOVEMBER, two thousand and [possibly] five", date: "2025-11-22" },
+                    { id: "gv78kaqGeNE", title: "radiohead \\ KID_A \\London•England [21.11.2005]", date: "2025-11-21" },
+                    { id: "3KL8j8gyUsQ", title: "lucky - radiohead london 2025", date: "" },
+                    { id: "uWtxGrrXII8", title: "2+2=5 - radiohead london", date: "" },
+                    { id: "kQDIcDjgVnM", title: "Radiohead Live 24/11/25 clips", date: "2025-11-24" },
+                    { id: "URL_1w0vS9o", title: "paranoid android - radiohead london 2025", date: "" },
+                    { id: "ykoW0k2LYdI", title: "karma police - radiohead london 2025", date: "" },
+                    { id: "LaOXVE9744o", title: "Radiohead LIVE - FULL GIG - November 2025 - London", date: "" },
+                    { id: "HAgS02VL3_E", title: "Radiohead Live at The O2 London, 24th November 2025", date: "2025-11-24" },
+                    { id: "06L9Z0GlQYI", title: "Radiohead Live at The O2 London (Almost) Full Concert – 24 November 2025", date: "2025-11-24" },
+                    { id: "d8gJAWwDX5M", title: "Just - Radiohead - London - 24th November 2025", date: "2025-11-24" },
+                    { id: "Raa2QRGMFo4", title: "Radiohead – Karma Police live London (The O2, 24/11/2025)", date: "2025-11-24" },
+                    { id: "MSFHDRuu1u4", title: "Radiohead – All I Need live London (The O2, 24/11/2025)", date: "2025-11-24" },
                 ]
             },
             {
                 city: "Copenhagen", 
                 dates: "DEC 01-05",
                 realVideos: [
-                    { id: "a2z_htyxLj8", title: "Radiohead - Jigsaw Falling into Place - live Copenhagen 2025-12-04 Thursday (new N1)" },
-                    { id: "Tp8Ayp289Uo", title: "Radiohead - Nice Dream - live Copenhagen 2025-12-04 night 1 (old N3)" },
-                    { id: "EFrlYnXZ-cQ", title: "Radiohead - Daydreaming (Live in Copenhagen 04.12.2025)" },
-                    { id: "kjaABeHwH6I", title: "Radiohead - The Gloaming (Live in Copenhagen 04.12.2025)" },
-                    { id: "4Pa0IRe40B0", title: "Radiohead - No Surprises (Live in Copenhagen 04.12.2025)" },
-                    { id: "pSxbxetIf08", title: "Radiohead - 2 + 2 = 5 - Royal Arena - Copenhagen, Denmark - 12-4-2025" },
-                    { id: "T2avg5MK1ZQ", title: "Radiohead - Kid A (Live in Copenhagen 04.12.2025)" },
-                    { id: "4rXEHx3g4nM", title: "Radiohead - Idioteque (Live in Copenhagen 04.12.2025)" },
-                    { id: "Q6ND4-aNwrw", title: "Radiohead - 15 Step (Live in Copenhagen 04.12.2025)" },
-                    { id: "STOopb76gWU", title: "Radiohead – Present Tense – Copenhagen (5 December)" },
-                    { id: "Ck4cxjwWB7k", title: "Radiohead - Paranoid Android (Live in Copenhagen 04.12.2025)" },
-                    { id: "YgehERgw3L8", title: "Radiohead - All I Need (Live in Copenhagen 04.12.2025)" },
-                    { id: "kXNZsgM5dKY", title: "Radiohead - Airbag (Live in Copenhagen 05.12.2025)" },
-                    { id: "xS8uq2DB7DI", title: "Radiohead Live in Copenhagen, Dec 4, 2025" },
-                    { id: "r8fqbdsaJ-0", title: "Radiohead – Ful Stop – Copenhagen (5 December)" },
-                    { id: "Ok6eIdj5Ayg", title: "Radiohead - Nude | Royal Arena, Copenhagen | 5/12/2025" },
-                    { id: "3pCVH3Sd_1k", title: "Radiohead - Paranoid Android | Royal Arena, Copenhagen | 5/12/2025" },
-                    { id: "B-cTtCUsyYY", title: "Radiohead - No Surprises | Royal Arena, Copenhagen | 5/12/2025" },
-                    { id: "UJXN11qy2dk", title: "Radiohead - Reckoner (live, Copenhagen 2025-12-05)" },
-                    { id: "bBGXBvMIc0I", title: "Radiohead - All I Need (live, Copenhagen 2025-12-05)" },
-                    { id: "9goBV5KaprM", title: "Radiohead - Jigsaw Falling Into Place - Royal Arena - Copenhagen, Denmark - 12-4-2025" },
-                    { id: "kgWh808rH4Y", title: "Radiohead – Like Spinning Plates – Copenhagen (5 December)" },
-                    { id: "5R1S0Y7igkc", title: "Radiohead - Weird Fishes / Arpeggi - Royal Arena - Copenhagen, Denmark - 12-4-2025" },
-                    { id: "rT5zhyB1nwo", title: "Radiohead - Like Spinning Plates - Royal Arena - Copenhagen, Denmark - 12-5-2025" },
-                    { id: "Z9sO8-o8dfg", title: "Radiohead - There There @ Royal Arena, Copenhagen 2025-12-05" },
-                    { id: "5IRU-K1zTRk", title: "Radiohead - Paranoid Android w/partial apology intro - Royal Arena - Copenhagen, Denmark - 12-5-2025" },
-                    { id: "tiISL5Ob_vc", title: "Radiohead - Weird Fishes/Arpeggi @ Royal Arena, Copenhagen 2025-12-05" },
-                    { id: "fFaWKLwpgv0", title: "Radiohead - Street Spirit (Fade Out) @ Royal Arena, Copenhagen 2025-12-05" },
-                    { id: "Xhs3r_NJwuY", title: "Exit Music (For A Film) - Radiohead Live in Copenhagen 5th December 2025" },
-                    { id: "G6Ekq67eY-U", title: "Radiohead - Exit Music (For A Film) @ Royal Arena, Copenhagen 2025-12-05" },
-                    { id: "BaWgUi7b1Ko", title: "Radiohead - Jigsaw Falling Into Place @ Royal Arena, Copenhagen 2025-12-05" },
-                    { id: "kHqtE9CNSIg", title: "Radiohead « Paranoid Android » @ Royal Arena Copenhagen (live 2025, night #2)" },
-                    { id: "P2Oy3Afk7Cs", title: "Radiohead - Pyramid Song (Copenhagen 5/12)" },
-                    { id: "lH1MJYziSXc", title: "Radiohead - Like Spinning Plates - live Copenhagen 2025-12-05 Friday new N2 (old N4)" },
-                    { id: "9P5ChHAKDbk", title: "bloom - radiohead copenhagen 2025" },
-                    { id: "X8AerLVp-UM", title: "Radiohead - Day 1 Live at Royal Arena, Copenhagen, 04/12/2025" },
-                    { id: "buc9x8Boh20", title: "Radiohead - Bodysnatchers (Live in Copenhagen, Dec 4)" },
-                    { id: "ldhcyn8hsnM", title: "Radiohead - (Nice Dreams) [Live in Copenhagen, Dec 4]" },
-                    { id: "t6o9PvQPlRQ", title: "Radiohead - Daydreaming (Live in Copenhagen, Dec 4)" },
-                    { id: "3ufYjBYm_Jo", title: "Radiohead - Everything In Its Right Place (Live in Copenhagen, Dec 4)" },
-                    { id: "w8ys0TeLDBc", title: "Radiohead - idiotque (Live in Copenhagen, Dec 4)" },
-                    { id: "ZnQYN0IL5y8", title: "Radiohead - Jigsaw Falling into Place + Paranoid Android (Live in Copenhagen, Dec 4)" },
-                    { id: "oWhYKDab4d0", title: "5. december 2025" },
-                    { id: "wZ6QA4Pehf4", title: "RADIOHEAD: 15 Step - Royal Arena Copenhagen Denmark 2025-12-04" },
-                    { id: "1xXuJIKpjpU", title: "weird fishes - radiohead copenhagen 2025" },
-                    { id: "Alp3oNRmTyM", title: "videotape - radiohead copenhagen 2025" },
-                    { id: "DVD5JJOWXFU", title: "everything in its right place (harry patch intro) - radiohead copenhagen 2025" },
-                    { id: "ghjwYnDg-8I", title: "lucky - radiohead copenhagen 2025" },
-                    { id: "nc5UVRtopLQ", title: "kid a - radiohead copenhagen 2025" },
-                    { id: "YzQ_0HVthbo", title: "15 step - radiohead copenhagen 2025" },
-                    { id: "5CLHQQVcN_I", title: "sit down stand up - radiohead copenhagen 2025" },
-                    { id: "KJ6n5ZmVrSw", title: "idioteque - radiohead copenhagen 2025" },
-                    { id: "_7w6v8O6aFg", title: "the national anthem - radiohead copenhagen 2025" },
-                    { id: "Iyc5_LlWODQ", title: "no surprises - radiohead copenhagen 2025" },
-                    { id: "Oiq_qrZtXog", title: "2+2=5 - radiohead copenhagen 2025" },
-                    { id: "2pmI8bAn_Ns", title: "the gloaming - radiohead copenhagen 2025" },
-                    { id: "d9Djpb19J5E", title: "Radiohead – Bodysnatchers – Copenhagen (4 December)" },
-                    { id: "-ZNu9B4Ol4M", title: "paranoid android - radiohead copenhagen 2025" },
-                    { id: "RyavYLMXDao", title: "karma police - radiohead copenhagen 2025" },
-                    { id: "rktYqZNTt6U", title: "fake plastic trees - radiohead copenhagen 2025" },
+                    { id: "a2z_htyxLj8", title: "Radiohead - Jigsaw Falling into Place - live Copenhagen 2025-12-04 Thursday (new N1)", date: "2025-12-04" },
+                    { id: "Tp8Ayp289Uo", title: "Radiohead - Nice Dream - live Copenhagen 2025-12-04 night 1 (old N3)", date: "2025-12-04" },
+                    { id: "EFrlYnXZ-cQ", title: "Radiohead - Daydreaming (Live in Copenhagen 04.12.2025)", date: "2025-12-04" },
+                    { id: "kjaABeHwH6I", title: "Radiohead - The Gloaming (Live in Copenhagen 04.12.2025)", date: "2025-12-04" },
+                    { id: "4Pa0IRe40B0", title: "Radiohead - No Surprises (Live in Copenhagen 04.12.2025)", date: "2025-12-04" },
+                    { id: "pSxbxetIf08", title: "Radiohead - 2 + 2 = 5 - Royal Arena - Copenhagen, Denmark - 12-4-2025", date: "2025-12-04" },
+                    { id: "T2avg5MK1ZQ", title: "Radiohead - Kid A (Live in Copenhagen 04.12.2025)", date: "2025-12-04" },
+                    { id: "4rXEHx3g4nM", title: "Radiohead - Idioteque (Live in Copenhagen 04.12.2025)", date: "2025-12-04" },
+                    { id: "Q6ND4-aNwrw", title: "Radiohead - 15 Step (Live in Copenhagen 04.12.2025)", date: "2025-12-04" },
+                    { id: "STOopb76gWU", title: "Radiohead – Present Tense – Copenhagen (5 December)", date: "2025-12-05" },
+                    { id: "Ck4cxjwWB7k", title: "Radiohead - Paranoid Android (Live in Copenhagen 04.12.2025)", date: "2025-12-04" },
+                    { id: "YgehERgw3L8", title: "Radiohead - All I Need (Live in Copenhagen 04.12.2025)", date: "2025-12-04" },
+                    { id: "kXNZsgM5dKY", title: "Radiohead - Airbag (Live in Copenhagen 05.12.2025)", date: "2025-12-05" },
+                    { id: "xS8uq2DB7DI", title: "Radiohead Live in Copenhagen, Dec 4, 2025", date: "2025-12-04" },
+                    { id: "r8fqbdsaJ-0", title: "Radiohead – Ful Stop – Copenhagen (5 December)", date: "2025-12-05" },
+                    { id: "Ok6eIdj5Ayg", title: "Radiohead - Nude | Royal Arena, Copenhagen | 5/12/2025", date: "2025-12-05" },
+                    { id: "3pCVH3Sd_1k", title: "Radiohead - Paranoid Android | Royal Arena, Copenhagen | 5/12/2025", date: "2025-12-05" },
+                    { id: "B-cTtCUsyYY", title: "Radiohead - No Surprises | Royal Arena, Copenhagen | 5/12/2025", date: "2025-12-05" },
+                    { id: "UJXN11qy2dk", title: "Radiohead - Reckoner (live, Copenhagen 2025-12-05)", date: "2025-12-05" },
+                    { id: "bBGXBvMIc0I", title: "Radiohead - All I Need (live, Copenhagen 2025-12-05)", date: "2025-12-05" },
+                    { id: "9goBV5KaprM", title: "Radiohead - Jigsaw Falling Into Place - Royal Arena - Copenhagen, Denmark - 12-4-2025", date: "2025-12-04" },
+                    { id: "kgWh808rH4Y", title: "Radiohead – Like Spinning Plates – Copenhagen (5 December)", date: "2025-12-05" },
+                    { id: "5R1S0Y7igkc", title: "Radiohead - Weird Fishes / Arpeggi - Royal Arena - Copenhagen, Denmark - 12-4-2025", date: "2025-12-04" },
+                    { id: "rT5zhyB1nwo", title: "Radiohead - Like Spinning Plates - Royal Arena - Copenhagen, Denmark - 12-5-2025", date: "2025-12-05" },
+                    { id: "Z9sO8-o8dfg", title: "Radiohead - There There @ Royal Arena, Copenhagen 2025-12-05", date: "2025-12-05" },
+                    { id: "5IRU-K1zTRk", title: "Radiohead - Paranoid Android w/partial apology intro - Royal Arena - Copenhagen, Denmark - 12-5-2025", date: "2025-12-05" },
+                    { id: "tiISL5Ob_vc", title: "Radiohead - Weird Fishes/Arpeggi @ Royal Arena, Copenhagen 2025-12-05", date: "2025-12-05" },
+                    { id: "fFaWKLwpgv0", title: "Radiohead - Street Spirit (Fade Out) @ Royal Arena, Copenhagen 2025-12-05", date: "2025-12-05" },
+                    { id: "Xhs3r_NJwuY", title: "Exit Music (For A Film) - Radiohead Live in Copenhagen 5th December 2025", date: "2025-12-05" },
+                    { id: "G6Ekq67eY-U", title: "Radiohead - Exit Music (For A Film) @ Royal Arena, Copenhagen 2025-12-05", date: "2025-12-05" },
+                    { id: "BaWgUi7b1Ko", title: "Radiohead - Jigsaw Falling Into Place @ Royal Arena, Copenhagen 2025-12-05", date: "2025-12-05" },
+                    { id: "kHqtE9CNSIg", title: "Radiohead « Paranoid Android » @ Royal Arena Copenhagen (live 2025, night #2)", date: "2025-12-05" },
+                    { id: "P2Oy3Afk7Cs", title: "Radiohead - Pyramid Song (Copenhagen 5/12)", date: "2025-12-05" },
+                    { id: "lH1MJYziSXc", title: "Radiohead - Like Spinning Plates - live Copenhagen 2025-12-05 Friday new N2 (old N4)", date: "2025-12-05" },
+                    { id: "9P5ChHAKDbk", title: "bloom - radiohead copenhagen 2025", date: "" },
+                    { id: "X8AerLVp-UM", title: "Radiohead - Day 1 Live at Royal Arena, Copenhagen, 04/12/2025", date: "2025-12-04" },
+                    { id: "buc9x8Boh20", title: "Radiohead - Bodysnatchers (Live in Copenhagen, Dec 4)", date: "2025-12-04" },
+                    { id: "ldhcyn8hsnM", title: "Radiohead - (Nice Dreams) [Live in Copenhagen, Dec 4]", date: "2025-12-04" },
+                    { id: "t6o9PvQPlRQ", title: "Radiohead - Daydreaming (Live in Copenhagen, Dec 4)", date: "2025-12-04" },
+                    { id: "3ufYjBYm_Jo", title: "Radiohead - Everything In Its Right Place (Live in Copenhagen, Dec 4)", date: "2025-12-04" },
+                    { id: "w8ys0TeLDBc", title: "Radiohead - idiotque (Live in Copenhagen, Dec 4)", date: "2025-12-04" },
+                    { id: "ZnQYN0IL5y8", title: "Radiohead - Jigsaw Falling into Place + Paranoid Android (Live in Copenhagen, Dec 4)", date: "2025-12-04" },
+                    { id: "oWhYKDab4d0", title: "5. december 2025", date: "2025-12-05" },
+                    { id: "wZ6QA4Pehf4", title: "RADIOHEAD: 15 Step - Royal Arena Copenhagen Denmark 2025-12-04", date: "2025-12-04" },
+                    { id: "1xXuJIKpjpU", title: "weird fishes - radiohead copenhagen 2025", date: "" },
+                    { id: "Alp3oNRmTyM", title: "videotape - radiohead copenhagen 2025", date: "" },
+                    { id: "DVD5JJOWXFU", title: "everything in its right place (harry patch intro) - radiohead copenhagen 2025", date: "" },
+                    { id: "ghjwYnDg-8I", title: "lucky - radiohead copenhagen 2025", date: "" },
+                    { id: "nc5UVRtopLQ", title: "kid a - radiohead copenhagen 2025", date: "" },
+                    { id: "YzQ_0HVthbo", title: "15 step - radiohead copenhagen 2025", date: "" },
+                    { id: "5CLHQQVcN_I", title: "sit down stand up - radiohead copenhagen 2025", date: "" },
+                    { id: "KJ6n5ZmVrSw", title: "idioteque - radiohead copenhagen 2025", date: "" },
+                    { id: "_7w6v8O6aFg", title: "the national anthem - radiohead copenhagen 2025", date: "" },
+                    { id: "Iyc5_LlWODQ", title: "no surprises - radiohead copenhagen 2025", date: "" },
+                    { id: "Oiq_qrZtXog", title: "2+2=5 - radiohead copenhagen 2025", date: "" },
+                    { id: "2pmI8bAn_Ns", title: "the gloaming - radiohead copenhagen 2025", date: "" },
+                    { id: "d9Djpb19J5E", title: "Radiohead – Bodysnatchers – Copenhagen (4 December)", date: "2025-12-04" },
+                    { id: "-ZNu9B4Ol4M", title: "paranoid android - radiohead copenhagen 2025", date: "" },
+                    { id: "RyavYLMXDao", title: "karma police - radiohead copenhagen 2025", date: "" },
+                    { id: "rktYqZNTt6U", title: "fake plastic trees - radiohead copenhagen 2025", date: "" },
                 ]
             },
             {
                 city: "Berlin", 
                 dates: "DEC 08-12",
                 realVideos: [
-                    { id: "RtUxRnEFr-k", title: "RADIOHEAD 2025 - Day 2 Berlin" },
-                    { id: "X8BJndxcmso", title: "Radiohead live Berlin full show 09.12.2025 @Uber Arena" },
-                    { id: "WNj5e8QOtco", title: "RADIOHEAD - Full Live Set - Uber Arena, Berlin (Day 3, 11.12.2025)" },
-                    { id: "1YRyfIUP8FI", title: "Radiohead Full Whole Entire Complete Show Live Uber Arena Berlin Germany December 11 2025 11.12.25" },
-                    { id: "NXy5xdwJaIY", title: "Radiohead - Live in Berlin (September 2016)" },
-                    { id: "YXpxgQD2n0k", title: "Radiohead - Live at Uber Arena 12/11/2025" },
-                    { id: "z3RmRpSkB9c", title: "Radiohead Jigsaw Falling Into Place Live Uber Arena Berlin Germany December 11 2025 12/11/25" },
-                    { id: "lIDTmJkBUSY", title: "Radiohead - Berlin Day 1 [08.12.2025] [Full show] - Live @ Uber Arena Berlin [ 4K ]" },
-                    { id: "xL6L98Yqr4I", title: "Radiohead - How to Disappear Completely, Live in Berlin 09/12/2025 Night 2" },
-                    { id: "lB1oaHrrH6o", title: "Radiohead - Exit Music (for a Film), Live in Berlin 09/12/2025 Night 2" },
-                    { id: "23iFVYcP8BI", title: "Radiohead - Berlin Day 3 [11.12.2025] [Full show] - Live @ Uber Arena Berlin [ 4K ]" },
-                    { id: "bsXi8bm4YPY", title: "Radiohead - Just, Live in Berlin 11/12/2025 Night 3" },
-                    { id: "mKSJPmAliu8", title: "Radiohead - Intro + Planet Telex live from Berlin 2025 (night 3)" },
-                    { id: "Sw9KZEo4Zc0", title: "Radiohead - Weird Fishes (Arpeggi) live from Berlin 2025 (night 3)" },
-                    { id: "oN9BPGppNho", title: "Radiohead - Exit Music (for a film) live from Berlin 2025 (night 3)" },
-                    { id: "EFFVmSL1gt0", title: "Radiohead No Surprises Live Uber Arena Berlin Germany December 11 2025 12/11/25 11.12.25 Night 3" },
-                    { id: "UQ78l16CYHY", title: "Radiohead You And Whose Army? Live Uber Arena Berlin Germany December 11 2025 12/11/25 11.12.25" },
-                    { id: "3bhqE-JgPP8", title: "Radiohead live in Berlin - Pyramid Song - 9th December 2025 (night 2)" },
-                    { id: "qIYYbL3Ds1Q", title: "Radiohead Paradnoid Android Live Uber Arena Berlin Germany December 11 2025 12/11/25 11.12.25" },
-                    { id: "5AcpvG5Ahy8", title: "Radiohead The National Anthem Live Uber Arena Berlin Germany December 11 2025 12/11/25 11.12.25" },
-                    { id: "V2-fiGmDncE", title: "Radiohead live in Berlin - Optimistic - 9th December 2025 (night 2)" },
-                    { id: "EQd1wyrniPs", title: "Radiohead Fake Plastic Trees Live Uber Arena Berlin Germany December 11 2025 12/11/25 11.12.25" },
-                    { id: "T2TdszPVRBA", title: "Daydreaming - Radiohead, 11-dec-2025, Uber Arena Berlin" },
-                    { id: "tfwbtTBHi3A", title: "Radiohead Let Down Live Uber Arena Berlin Germany December 11 2025 12/11/25 11.12.25 Night 3" },
-                    { id: "eHXsn0chWaI", title: "Radiohead Daydreaming Live Uber Arena Berlin Germany December 11 2025 12/11/25 11.12.25 Night 3" },
-                    { id: "3QN91i3KoH4", title: "Radiohead Ful Stop Live Uber Arena Berlin Germany December 11 2025 12/11/25 11.12.25 Night 3" },
-                    { id: "bd5YFl6hMJQ", title: "Videotape - Radiohead, 11-dec-2025, Uber Arena Berlin" },
-                    { id: "Yyf8ZOtDNqY", title: "Radiohead Bloom Live Uber Arena Berlin Germany December 11 2025 12/11/25 11.12.25 Night 3" },
-                    { id: "at-e86I6SgU", title: "Radiohead - Nude live from Berlin 2025 (night 3)" },
-                    { id: "A787FF2LQu4", title: "Radiohead Weird Idioteque Live Uber Arena Berlin Germany December 11 2025 12/11/25 11.12.25 Night 3" },
-                    { id: "Xtz1NX0-m_c", title: "Radiohead - Lucky live from Berlin 2025 (night 3)" },
-                    { id: "uQ_JuKl2ZnQ", title: "Radiohead - Kid A live from Berlin 2025 (night 3)" },
-                    { id: "KD0BoQY5yHY", title: "Radiohead Nude Live Uber Arena Berlin Germany December 11 2025 12/11/25 11.12.25 Night 3" },
-                    { id: "vn0aqQxasmY", title: "Radiohead Videotape Live Uber Arena Berlin Germany December 11 2025 12/11/25 11.12.25 Night 3" },
-                    { id: "s0gUsWqMXxo", title: "Radiohead Kid A Live Uber Arena Berlin Germany December 11 2025 12/11/25 11.12.25 Night 3" },
-                    { id: "IQNgR-mnL7w", title: "Radiohead live in Berlin - Myxomatosis - 9th December 2025 (night 2)" },
-                    { id: "YrWNx2wMtVI", title: "Radiohead The Gloaming Live Uber Arena Berlin Germany December 11 2025 12/11/25 11.12.25 Night 3" },
-                    { id: "iJR1lkRe0t8", title: "Radiohead 15 Step Live Uber Arena Berlin Germany December 11 2025 12/11/25 11.12.25 Night 3" },
-                    { id: "dN_CQ7WZZeM", title: "Radiohead - Lucky, Live in Berlin 11/12/2025 Night 3" },
-                    { id: "M-cTd-9DT6U", title: "Radiohead Lucky Live Uber Arena Berlin Germany December 11 2025 12/11/25 11.12.25 Night 3" },
-                    { id: "u05EUkkn5L4", title: "Radiohead Sit Down Stand Up Live Uber Arena Berlin Germany December 11 2025 12/11/25 11.12.25" },
-                    { id: "XTp1GWtt9VE", title: "Radiohead live in Berlin - Ful Stop - 9th December 2025 (night 2)" },
-                    
+                    { id: "RtUxRnEFr-k", title: "RADIOHEAD 2025 - Day 2 Berlin", date: "2025-12-09" },
+                    { id: "X8BJndxcmso", title: "Radiohead live Berlin full show 09.12.2025 @Uber Arena", date: "2025-12-09" },
+                    { id: "WNj5e8QOtco", title: "RADIOHEAD - Full Live Set - Uber Arena, Berlin (Day 3, 11.12.2025)", date: "2025-12-11" },
+                    { id: "1YRyfIUP8FI", title: "Radiohead Full Whole Entire Complete Show Live Uber Arena Berlin Germany December 11 2025 11.12.25", date: "2025-12-11" },
+                    { id: "NXy5xdwJaIY", title: "Radiohead - Live in Berlin (September 2016)", date: "" },
+                    { id: "YXpxgQD2n0k", title: "Radiohead - Live at Uber Arena 12/11/2025", date: "2025-12-11" },
+                    { id: "z3RmRpSkB9c", title: "Radiohead Jigsaw Falling Into Place Live Uber Arena Berlin Germany December 11 2025 12/11/25", date: "2025-12-11" },
+                    { id: "lIDTmJkBUSY", title: "Radiohead - Berlin Day 1 [08.12.2025] [Full show] - Live @ Uber Arena Berlin [ 4K ]", date: "2025-12-08" },
+                    { id: "xL6L98Yqr4I", title: "Radiohead - How to Disappear Completely, Live in Berlin 09/12/2025 Night 2", date: "2025-12-09" },
+                    { id: "lB1oaHrrH6o", title: "Radiohead - Exit Music (for a Film), Live in Berlin 09/12/2025 Night 2", date: "2025-12-09" },
+                    { id: "23iFVYcP8BI", title: "Radiohead - Berlin Day 3 [11.12.2025] [Full show] - Live @ Uber Arena Berlin [ 4K ]", date: "2025-12-11" },
+                    { id: "bsXi8bm4YPY", title: "Radiohead - Just, Live in Berlin 11/12/2025 Night 3", date: "2025-12-11" },
+                    { id: "mKSJPmAliu8", title: "Radiohead - Intro + Planet Telex live from Berlin 2025 (night 3)", date: "2025-12-11" },
+                    { id: "Sw9KZEo4Zc0", title: "Radiohead - Weird Fishes (Arpeggi) live from Berlin 2025 (night 3)", date: "2025-12-11" },
+                    { id: "oN9BPGppNho", title: "Radiohead - Exit Music (for a film) live from Berlin 2025 (night 3)", date: "2025-12-11" },
+                    { id: "EFFVmSL1gt0", title: "Radiohead No Surprises Live Uber Arena Berlin Germany December 11 2025 12/11/25 11.12.25 Night 3", date: "2025-12-11" },
+                    { id: "UQ78l16CYHY", title: "Radiohead You And Whose Army? Live Uber Arena Berlin Germany December 11 2025 12/11/25 11.12.25", date: "2025-12-11" },
+                    { id: "3bhqE-JgPP8", title: "Radiohead live in Berlin - Pyramid Song - 9th December 2025 (night 2)", date: "2025-12-09" },
+                    { id: "qIYYbL3Ds1Q", title: "Radiohead Paradnoid Android Live Uber Arena Berlin Germany December 11 2025 12/11/25 11.12.25", date: "2025-12-11" },
+                    { id: "5AcpvG5Ahy8", title: "Radiohead The National Anthem Live Uber Arena Berlin Germany December 11 2025 12/11/25 11.12.25", date: "2025-12-11" },
+                    { id: "V2-fiGmDncE", title: "Radiohead live in Berlin - Optimistic - 9th December 2025 (night 2)", date: "2025-12-09" },
+                    { id: "EQd1wyrniPs", title: "Radiohead Fake Plastic Trees Live Uber Arena Berlin Germany December 11 2025 12/11/25 11.12.25", date: "2025-12-11" },
+                    { id: "T2TdszPVRBA", title: "Daydreaming - Radiohead, 11-dec-2025, Uber Arena Berlin", date: "2025-12-11" },
+                    { id: "tfwbtTBHi3A", title: "Radiohead Let Down Live Uber Arena Berlin Germany December 11 2025 12/11/25 11.12.25 Night 3", date: "2025-12-11" },
+                    { id: "eHXsn0chWaI", title: "Radiohead Daydreaming Live Uber Arena Berlin Germany December 11 2025 12/11/25 11.12.25 Night 3", date: "2025-12-11" },
+                    { id: "3QN91i3KoH4", title: "Radiohead Ful Stop Live Uber Arena Berlin Germany December 11 2025 12/11/25 11.12.25 Night 3", date: "2025-12-11" },
+                    { id: "bd5YFl6hMJQ", title: "Videotape - Radiohead, 11-dec-2025, Uber Arena Berlin", date: "2025-12-11" },
+                    { id: "Yyf8ZOtDNqY", title: "Radiohead Bloom Live Uber Arena Berlin Germany December 11 2025 12/11/25 11.12.25 Night 3", date: "2025-12-11" },
+                    { id: "at-e86I6SgU", title: "Radiohead - Nude live from Berlin 2025 (night 3)", date: "2025-12-11" },
+                    { id: "A787FF2LQu4", title: "Radiohead Weird Idioteque Live Uber Arena Berlin Germany December 11 2025 12/11/25 11.12.25 Night 3", date: "2025-12-11" },
+                    { id: "Xtz1NX0-m_c", title: "Radiohead - Lucky live from Berlin 2025 (night 3)", date: "2025-12-11" },
+                    { id: "uQ_JuKl2ZnQ", title: "Radiohead - Kid A live from Berlin 2025 (night 3)", date: "2025-12-11" },
+                    { id: "KD0BoQY5yHY", title: "Radiohead Nude Live Uber Arena Berlin Germany December 11 2025 12/11/25 11.12.25 Night 3", date: "2025-12-11" },
+                    { id: "vn0aqQxasmY", title: "Radiohead Videotape Live Uber Arena Berlin Germany December 11 2025 12/11/25 11.12.25 Night 3", date: "2025-12-11" },
+                    { id: "s0gUsWqMXxo", title: "Radiohead Kid A Live Uber Arena Berlin Germany December 11 2025 12/11/25 11.12.25 Night 3", date: "2025-12-11" },
+                    { id: "IQNgR-mnL7w", title: "Radiohead live in Berlin - Myxomatosis - 9th December 2025 (night 2)", date: "2025-12-09" },
+                    { id: "YrWNx2wMtVI", title: "Radiohead The Gloaming Live Uber Arena Berlin Germany December 11 2025 12/11/25 11.12.25 Night 3", date: "2025-12-11" },
+                    { id: "iJR1lkRe0t8", title: "Radiohead 15 Step Live Uber Arena Berlin Germany December 11 2025 12/11/25 11.12.25 Night 3", date: "2025-12-11" },
+                    { id: "dN_CQ7WZZeM", title: "Radiohead - Lucky, Live in Berlin 11/12/2025 Night 3", date: "2025-12-11" },
+                    { id: "M-cTd-9DT6U", title: "Radiohead Lucky Live Uber Arena Berlin Germany December 11 2025 12/11/25 11.12.25 Night 3", date: "2025-12-11" },
+                    { id: "u05EUkkn5L4", title: "Radiohead Sit Down Stand Up Live Uber Arena Berlin Germany December 11 2025 12/11/25 11.12.25", date: "2025-12-11" },
+                    { id: "XTp1GWtt9VE", title: "Radiohead live in Berlin - Ful Stop - 9th December 2025 (night 2)", date: "2025-12-09" },
+
                 ]
             }
         ];
@@ -1474,6 +1541,9 @@
         function toggleCitySelection(index) {
             const allThumbs = document.querySelectorAll('.thumb');
             const cityLabels = document.querySelectorAll('.city-label-wrapper');
+            const cityFilterEl = document.getElementById('city-filter');
+            const dateFilterEl = document.getElementById('date-filter');
+            const clearBtn = document.getElementById('clear-search-btn');
 
             // If clicking the same city, deselect
             if (selectedCityIndex === index) {
@@ -1484,6 +1554,11 @@
                 cityLabels.forEach(label => {
                     label.classList.remove('dimmed', 'selected');
                 });
+                // Clear dropdown filters
+                cityFilterEl.value = '';
+                dateFilterEl.value = '';
+                populateDateDropdown();
+                clearBtn.classList.remove('visible');
                 return;
             }
 
@@ -1511,8 +1586,16 @@
                 }
             });
 
-            // Clear search when selecting a city
-            clearSearch(false);
+            // Sync dropdown filter with city selection
+            const cityName = CORE_TOUR_DATA[index].city;
+            cityFilterEl.value = cityName;
+            populateDateDropdown(cityName);
+            clearBtn.classList.add('visible');
+
+            // Clear search input but keep city filter
+            const searchInput = document.getElementById('search-input');
+            if (searchInput) searchInput.value = '';
+            document.getElementById('search-results-count').textContent = '';
         }
 
         // --- SEARCH STATE ---
@@ -1520,16 +1603,18 @@
 
         function performSearch(term) {
             const searchTerm = term.trim().toLowerCase();
+            const cityFilter = document.getElementById('city-filter').value;
+            const dateFilter = document.getElementById('date-filter').value;
             const resultsCount = document.getElementById('search-results-count');
             const allThumbs = document.querySelectorAll('.thumb');
 
-            // If empty search, clear everything
-            if (!searchTerm) {
+            // If no filters active, clear everything
+            if (!searchTerm && !cityFilter && !dateFilter) {
                 clearSearch();
                 return;
             }
 
-            // Clear city filter when searching
+            // Clear city label filter when using search bar filters
             if (selectedCityIndex !== null) {
                 selectedCityIndex = null;
                 allThumbs.forEach(thumb => {
@@ -1545,7 +1630,15 @@
 
             allThumbs.forEach(thumb => {
                 const title = (thumb.getAttribute('data-title') || '').toLowerCase();
-                if (title.includes(searchTerm)) {
+                const thumbCity = thumb.getAttribute('data-city') || '';
+                const thumbDate = thumb.getAttribute('data-date') || '';
+
+                // Check all filter conditions
+                const matchesSearch = !searchTerm || title.includes(searchTerm);
+                const matchesCity = !cityFilter || thumbCity === cityFilter;
+                const matchesDate = !dateFilter || thumbDate === dateFilter;
+
+                if (matchesSearch && matchesCity && matchesDate) {
                     thumb.classList.add('search-match');
                     thumb.classList.remove('search-dimmed');
                     matchCount++;
@@ -1560,19 +1653,96 @@
 
         function clearSearch(clearInput = true) {
             const allThumbs = document.querySelectorAll('.thumb');
+            const cityLabels = document.querySelectorAll('.city-label-wrapper');
             const resultsCount = document.getElementById('search-results-count');
             const searchInput = document.getElementById('search-input');
+            const cityFilter = document.getElementById('city-filter');
+            const dateFilter = document.getElementById('date-filter');
 
             currentSearchTerm = '';
 
             allThumbs.forEach(thumb => {
-                thumb.classList.remove('search-match', 'search-dimmed');
+                thumb.classList.remove('search-match', 'search-dimmed', 'city-dimmed', 'city-selected');
             });
 
+            cityLabels.forEach(label => {
+                label.classList.remove('dimmed', 'selected');
+            });
+
+            selectedCityIndex = null;
             resultsCount.textContent = '';
 
-            if (clearInput && searchInput) {
-                searchInput.value = '';
+            if (clearInput) {
+                if (searchInput) searchInput.value = '';
+                if (cityFilter) cityFilter.value = '';
+                if (dateFilter) dateFilter.value = '';
+                // Repopulate date dropdown with all dates
+                populateDateDropdown();
+            }
+        }
+
+        // Populate date dropdown based on selected city (or all cities)
+        function populateDateDropdown(cityName = '') {
+            const dateFilterEl = document.getElementById('date-filter');
+            if (!dateFilterEl) return;
+
+            const currentDate = dateFilterEl.value;
+            dateFilterEl.innerHTML = '<option value="">ALL DATES</option>';
+
+            // Helper to format date as "DD.MM."
+            function formatDate(date) {
+                const d = new Date(date + 'T00:00:00');
+                const day = d.getDate().toString().padStart(2, '0');
+                const month = (d.getMonth() + 1).toString().padStart(2, '0');
+                return `${day}.${month}.`;
+            }
+
+            const allDates = new Set();
+
+            if (cityName) {
+                // Single city selected - no groups needed
+                const cityData = CORE_TOUR_DATA.find(c => c.city === cityName);
+                if (cityData) {
+                    const dates = new Set();
+                    cityData.realVideos.forEach(video => {
+                        if (video.date) dates.add(video.date);
+                    });
+                    Array.from(dates).sort().forEach(date => {
+                        const option = document.createElement('option');
+                        option.value = date;
+                        option.textContent = formatDate(date);
+                        dateFilterEl.appendChild(option);
+                        allDates.add(date);
+                    });
+                }
+            } else {
+                // All cities - group by city
+                CORE_TOUR_DATA.forEach(cityData => {
+                    const dates = new Set();
+                    cityData.realVideos.forEach(video => {
+                        if (video.date) dates.add(video.date);
+                    });
+
+                    if (dates.size > 0) {
+                        const optgroup = document.createElement('optgroup');
+                        optgroup.label = cityData.city.toUpperCase();
+
+                        Array.from(dates).sort().forEach(date => {
+                            const option = document.createElement('option');
+                            option.value = date;
+                            option.textContent = formatDate(date);
+                            optgroup.appendChild(option);
+                            allDates.add(date);
+                        });
+
+                        dateFilterEl.appendChild(optgroup);
+                    }
+                });
+            }
+
+            // Restore selection if still valid
+            if (currentDate && allDates.has(currentDate)) {
+                dateFilterEl.value = currentDate;
             }
         }
 
@@ -1693,6 +1863,8 @@
 
                     // Track which city this thumb belongs to (for filtering)
                     thumb.setAttribute('data-city-index', index);
+                    thumb.setAttribute('data-city', city.city);
+                    thumb.setAttribute('data-date', video.date || '');
 
                     // --- ACCESSIBILITY ---
                     thumb.setAttribute('role', 'button');
@@ -1882,6 +2054,8 @@
             const searchInput = document.getElementById('search-input');
             const searchBtn = document.getElementById('search-btn');
             const clearBtn = document.getElementById('clear-search-btn');
+            const cityFilterEl = document.getElementById('city-filter');
+            const dateFilterEl = document.getElementById('date-filter');
 
             searchBtn.addEventListener('click', () => {
                 performSearch(searchInput.value);
@@ -1889,6 +2063,75 @@
 
             clearBtn.addEventListener('click', () => {
                 clearSearch();
+                updateClearButtonState();
+            });
+
+            // Update clear button visibility based on filter state
+            function updateClearButtonState() {
+                const hasFilters = searchInput.value || cityFilterEl.value || dateFilterEl.value;
+                clearBtn.classList.toggle('visible', !!hasFilters);
+            }
+
+            // Initialize date dropdown with all dates
+            populateDateDropdown();
+
+            // Sync city labels with dropdown selection
+            function syncCityLabelsWithDropdown(cityName) {
+                const allThumbs = document.querySelectorAll('.thumb');
+                const cityLabels = document.querySelectorAll('.city-label-wrapper');
+
+                if (!cityName) {
+                    // Clear all city selection
+                    selectedCityIndex = null;
+                    allThumbs.forEach(thumb => {
+                        thumb.classList.remove('city-dimmed', 'city-selected');
+                    });
+                    cityLabels.forEach(label => {
+                        label.classList.remove('dimmed', 'selected');
+                    });
+                } else {
+                    // Find city index and select it
+                    const cityIndex = CORE_TOUR_DATA.findIndex(c => c.city === cityName);
+                    if (cityIndex >= 0) {
+                        selectedCityIndex = cityIndex;
+                        allThumbs.forEach(thumb => {
+                            const thumbCityIndex = parseInt(thumb.getAttribute('data-city-index'));
+                            if (thumbCityIndex === cityIndex) {
+                                thumb.classList.remove('city-dimmed');
+                                thumb.classList.add('city-selected');
+                            } else {
+                                thumb.classList.remove('city-selected');
+                                thumb.classList.add('city-dimmed');
+                            }
+                        });
+                        cityLabels.forEach((label, i) => {
+                            if (i === cityIndex) {
+                                label.classList.remove('dimmed');
+                                label.classList.add('selected');
+                            } else {
+                                label.classList.remove('selected');
+                                label.classList.add('dimmed');
+                            }
+                        });
+                    }
+                }
+            }
+
+            // Trigger search when filters change
+            cityFilterEl.addEventListener('change', () => {
+                populateDateDropdown(cityFilterEl.value);
+                syncCityLabelsWithDropdown(cityFilterEl.value);
+                performSearch(searchInput.value);
+                updateClearButtonState();
+            });
+
+            dateFilterEl.addEventListener('change', () => {
+                performSearch(searchInput.value);
+                updateClearButtonState();
+            });
+
+            searchInput.addEventListener('input', () => {
+                updateClearButtonState();
             });
 
             searchInput.addEventListener('keydown', (e) => {
@@ -1897,6 +2140,7 @@
                 }
                 if (e.key === 'Escape') {
                     clearSearch();
+                    updateClearButtonState();
                 }
             });
 
