@@ -390,6 +390,12 @@
             padding: 10px 15px;
             border: 1px solid var(--rh-dim);
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+            box-sizing: border-box;
+            max-width: calc(100% - 20px);
+        }
+
+        #search-bar * {
+            box-sizing: border-box;
         }
 
         #search-input, #city-filter, #date-filter {
@@ -428,6 +434,13 @@
         #city-filter option, #date-filter option {
             background: var(--rh-black);
             color: var(--rh-white);
+        }
+
+        #date-filter optgroup {
+            background: var(--rh-black);
+            color: var(--rh-acid);
+            font-weight: bold;
+            font-style: normal;
         }
 
         #search-input:focus, #city-filter:focus, #date-filter:focus {
@@ -669,37 +682,55 @@
                 top: 10px;
                 padding: 8px 10px;
                 gap: 5px;
+                width: calc(100% - 20px);
+                left: 10px;
+                transform: none;
+                flex-wrap: wrap;
+                justify-content: center;
             }
 
             #city-filter, #date-filter {
-                width: 100px;
+                width: calc(50% - 3px);
                 font-size: 0.8rem;
-                padding: 6px 8px;
-            }
-
-            #city-filter {
-                padding-right: 22px;
+                padding: 6px 22px 6px 8px;
+                order: 0;
             }
 
             #search-input {
-                width: 120px;
+                width: 100%;
                 font-size: 0.8rem;
                 padding: 6px 8px;
+                order: 1;
             }
 
             #search-btn, #clear-search-btn {
                 font-size: 0.7rem;
                 padding: 6px 10px;
+                flex: 1;
+                order: 2;
+            }
+
+            #clear-search-btn {
+                flex: none;
+            }
+
+            #clear-search-btn.visible {
+                flex: 1;
             }
 
             #search-results-count {
                 font-size: 0.65rem;
-                min-width: 60px;
+                width: 100%;
+                text-align: center;
+                order: 3;
+                margin-left: 0;
             }
 
             #chat-toggle-btn {
                 font-size: 0.7rem;
                 padding: 6px 10px;
+                flex: 1;
+                order: 2;
             }
 
             #chat-panel {
@@ -730,48 +761,12 @@
                 font-size: 0.65rem;
             }
 
-            #search-bar {
-                width: calc(100% - 20px);
-                left: 10px;
-                transform: none;
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 5px;
+            #city-filter, #date-filter, #search-input {
+                font-size: 0.7rem;
             }
 
-            #city-filter, #date-filter {
-                width: calc(50% - 3px);
-                order: 0;
-                font-size: 0.75rem;
-                padding: 6px 8px;
-            }
-
-            #city-filter {
-                padding-right: 22px;
-            }
-
-            #search-input {
-                width: 100%;
-                order: 1;
-                font-size: 0.8rem;
-            }
-
-            #search-btn, #clear-search-btn {
-                flex: 1;
-                order: 2;
-            }
-
-            #search-results-count {
-                width: 100%;
-                text-align: center;
-                order: 3;
-                margin-left: 0;
-                margin-top: 5px;
-            }
-
-            #chat-toggle-btn {
-                flex: 1;
-                order: 2;
+            #search-btn, #clear-search-btn, #chat-toggle-btn {
+                font-size: 0.65rem;
             }
 
             #video-container {
